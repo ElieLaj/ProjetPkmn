@@ -176,10 +176,11 @@ namespace Pokemon_like
 
             }
 
-            public void takeDamage(Move move, int attack)
+            public void takeDamage(Move move, int attack, double stab)
             {
                 Random random = new Random();
-                int damage = attack + move.Damage / 8;
+
+                int damage =(int) ((attack + move.Damage / 8) * stab);
                 damage -= Defense;
                 if(damage <= 0) { damage = 1; }
                 //double modifier = (random.NextDouble() + 1);
@@ -204,7 +205,16 @@ namespace Pokemon_like
                 {
                     Move _move = (Move)move;
                     Console.WriteLine(Name + " used " + _move.Name);
-                    target.takeDamage(_move, Attack);
+                    double stab = 1;
+                    foreach(string type in Type)
+                    {
+                        if (_move.Type == type)
+                        {
+                            stab = 1.5;
+                        }
+                    }
+                    
+                    target.takeDamage(_move, Attack, stab);
                 }
                 else
                 {
@@ -217,7 +227,16 @@ namespace Pokemon_like
             {
                 Move move = Moves[new Random().Next(Moves.Count)];
                 Console.WriteLine(Name + " used " + move.Name);
-                target.takeDamage(move, Attack);
+                double stab = 1;
+                foreach (string type in Type)
+                {
+                    if (move.Type == type)
+                    {
+                        stab = 1.5;
+                    }
+                }
+
+                target.takeDamage(move, Attack, stab);
             }
 
             public void ShowHealthBar()
