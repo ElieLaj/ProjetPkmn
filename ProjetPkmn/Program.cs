@@ -152,9 +152,10 @@ namespace Pokemon_like
                     Moves = _learnset.GetRange(0, 4);
                 }
             }
+
             public void gainExp(int exp, int opponentLevel) {  
                 int _exp = exp * opponentLevel / 7;
-                Console.WriteLine(Name + " has gained " + _exp + " !");
+                Console.WriteLine(Name + " has gained " + _exp + " EXP!");
 
                 if(Exp + _exp < ExpThreshold)
                 {
@@ -394,8 +395,14 @@ namespace Pokemon_like
                 }
             }
         }
+        public interface IItem
+        {
+            string Name { get; }
+            int Cost { get; }
+            Pokemon Use(Pokemon target);
+        }
 
-        public class HealingItem
+        public class HealingItem : IItem
         {
             public string Name { get; set; }
             public int Cost { get; set; }
@@ -409,9 +416,38 @@ namespace Pokemon_like
                 Heal = _heal;
             }
 
-            public void Use(Pokemon target)
+            public Pokemon Use(Pokemon target)
             {
                 target.Heal(Heal);
+                return null;
+
+            }
+        }
+        public class CaptureItem : IItem
+        {
+            public string Name { get; set; }
+            public int Cost { get; set; }
+            public int Rate { get; set; }
+
+
+            public CaptureItem(string _name, int _cost, int _rate)
+            {
+                Name = _name;
+                Cost = _cost;
+                Rate = _rate;
+
+            }
+
+            public Pokemon Use(Pokemon target)
+            {
+                if ((1 - ((2 / 3) * (target.Health / target.MaxHealth))) * 200 * Rate >= 160)
+                {
+                   return target;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
         public static void Battle(Trainer trainer, Pokemon pkmn2)
@@ -679,9 +715,19 @@ namespace Pokemon_like
                 else if(item is HealingItem) 
                 {
                     HealingItem item2 = (HealingItem)item;
-                    trainer.Items.Add(item2);
-                    Console.WriteLine("You chose " + item2.Name);
-                    while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                    if(trainer.Pokedollars - item2.Cost >= 0)
+                    {
+                        trainer.Items.Add(item2);
+                        trainer.Pokedollars -= item2.Cost;
+                        Console.WriteLine("You chose " + item2.Name);
+                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                    }
+                    else
+                    {
+                        Console.WriteLine("You don't have enough money for " + item2.Name);
+                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                    }
+                    
                 }
 
                
