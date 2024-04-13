@@ -70,6 +70,7 @@ namespace Pokemon_like
                             {
                                 Pokemon chosenPkmn = (Pokemon)pkmn;
                                 user.Pokemons.Add(chosenPkmn);
+
                                 Console.WriteLine("You chose " + chosenPkmn.Name);
                                 while (Console.ReadKey().Key != ConsoleKey.Enter) { }
                             }
@@ -318,17 +319,27 @@ namespace Pokemon_like
                 Items = _items;
             }
 
-            public void UseItem(Pokemon pokemon, ref int input)
+            public void UseItem(ref int input)
             {
                 object item = ChooseItem(Items);
                 if (item is HealingItem)
                 {
                     HealingItem usedItem = (HealingItem)item;
-                    usedItem.Use(pokemon);
+                    object pkmn = ChoosePokemon(Pokemons);
+                    if(pkmn is Pokemon)
+                    {
+                        Pokemon pokemon = (Pokemon)pkmn;
+                        usedItem.Use(pokemon);
 
-                    Items.Remove(usedItem);
-                    Console.WriteLine("You used " + usedItem.Name + " on " + pokemon.Name + " !");
-                    Console.WriteLine("He gained: " + usedItem.Heal + " health");
+                        Items.Remove(usedItem);
+                        Console.WriteLine("You used " + usedItem.Name + " on " + pokemon.Name + " !");
+                        Console.WriteLine("He gained: " + usedItem.Heal + " health");
+                    }
+                    else
+                    {
+                        input = 4;
+                        return;
+                    }
                 }
                 else
                 {
@@ -546,7 +557,7 @@ namespace Pokemon_like
                         trainerMon.useMove(pkmn2, ref input);
                         break;
                     case 1:
-                        trainer.UseItem(trainerMon, ref input);
+                        trainer.UseItem(ref input);
                         break;
                     case 2:
                         escaped = trainer.AttemptEscape(pkmn2);
