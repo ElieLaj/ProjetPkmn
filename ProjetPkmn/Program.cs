@@ -31,9 +31,9 @@ namespace Pokemon_like
             Move ember = new Move("Ember", "Fire", 40);
 
             List<Move> moveSetBasic = [tackle, scratch, lick, waterGun];
-            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 16, 8, 20, 30, 5, moveSetBasic);
-            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 20, 5, 25, 27, 5, moveSetBasic);
-            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass"], 14, 10, 17, 33, 5, moveSetBasic);
+            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 16, 8, 20, 30, 5, 64, moveSetBasic);
+            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 20, 5, 25, 27, 5, 64, moveSetBasic);
+            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass"], 14, 10, 17, 33, 5, 64, moveSetBasic);
 
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
@@ -108,25 +108,7 @@ namespace Pokemon_like
                 }
             }
         }
-        public static int MenuInputs(Trainer user)
-        {
 
-            List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter", "Leave the game"];
-
-            int currentInput = 0;
-
-            bool isNotFinished = true;
-
-            while (isNotFinished == true)
-            {
-                Console.Clear();
-                Console.WriteLine("What do you want to do " + user.Name + " ?");
-                Console.WriteLine("Balance: " + user.Pokedollars + " Pokedollars");
-                (isNotFinished, currentInput) = Choices(inputs, currentInput);
-            }
-
-            return currentInput;
-        }
         public class Pokemon
         {
             public string Name { get; set; }
@@ -139,12 +121,13 @@ namespace Pokemon_like
             public int MaxHealth { get; set; }
             public int ExpThreshold { get; set; }
             public int Exp { get; set; }
+            public int BaseExp { get; set; }
 
             public List<Move> Moves { get; set; }
             public List<Move> LearnSet { get; set; }
 
 
-            public Pokemon(string _name, List<string> _type, int _attack, int _defense, int _speed, int _health, int _level, List<Move> _learnset)
+            public Pokemon(string _name, List<string> _type, int _attack, int _defense, int _speed, int _health, int _level, int _baseExp, List<Move> _learnset)
             {
                 Name = _name;
                 Type = _type;
@@ -156,7 +139,9 @@ namespace Pokemon_like
                 MaxHealth = _health;
                 Moves = new List<Move>();
                 Exp = 0;
+                BaseExp = _baseExp;
                 ExpThreshold = (int)(1.2 * (Math.Pow(Level, 3) - 15 * (Level * Level) + 100 * Level - 140));
+
                 LearnSet = _learnset;
                 if(_learnset.Count < 4)
                 {
@@ -167,16 +152,17 @@ namespace Pokemon_like
                     Moves = _learnset.GetRange(0, 4);
                 }
             }
-            public void gainExp(int exp) {  
-                Console.WriteLine(Name + " has gained " + exp + " !");
+            public void gainExp(int exp, int opponentLevel) {  
+                int _exp = exp * opponentLevel / 7;
+                Console.WriteLine(Name + " has gained " + _exp + " !");
 
-                if(Exp + exp < ExpThreshold)
+                if(Exp + _exp < ExpThreshold)
                 {
-                    Exp += exp;
+                    Exp += _exp;
                 }
                 else
                 {
-                    int tmpExp = Exp + exp - ExpThreshold;
+                    int tmpExp = Exp + _exp - ExpThreshold;
                     Level += 1;
                     Exp = 0 + tmpExp;
 
@@ -495,6 +481,7 @@ namespace Pokemon_like
             else if(pkmn2.Health <= 0)
             {
                 Console.WriteLine(pkmn2.Name + " has fainted !");
+                pkmn1.gainExp((int)(pkmn2.BaseExp * 1.5), pkmn2.Level);
                 Console.WriteLine("You won 500 Pokedollars");
                 trainer.Pokedollars += 500;
             }
@@ -540,9 +527,26 @@ namespace Pokemon_like
                 }
             } while (input == 4);
         }
-       
 
+        public static int MenuInputs(Trainer user)
+        {
 
+            List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter", "Leave the game"];
+
+            int currentInput = 0;
+
+            bool isNotFinished = true;
+
+            while (isNotFinished == true)
+            {
+                Console.Clear();
+                Console.WriteLine("What do you want to do " + user.Name + " ?");
+                Console.WriteLine("Balance: " + user.Pokedollars + " Pokedollars");
+                (isNotFinished, currentInput) = Choices(inputs, currentInput);
+            }
+
+            return currentInput;
+        }
 
         public static int BattleInputs(Pokemon pkmn1, Pokemon pkmn2)
         {
