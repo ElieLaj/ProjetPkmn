@@ -32,8 +32,8 @@ namespace Pokemon_like
 
             List<Move> moveSetBasic = [tackle, scratch, lick, waterGun];
             Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 10, 8, 9, 17, 5, 64, moveSetBasic);
-            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 12, 5, 11, 16, 5, 64, moveSetBasic);
-            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass"], 8, 10, 8, 19, 5, 64, moveSetBasic);
+            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 12, 8, 11, 16, 5, 64, moveSetBasic);
+            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 8, 10, 8, 19, 5, 64, moveSetBasic);
 
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
@@ -486,16 +486,16 @@ namespace Pokemon_like
                 {
                     if (move.Type == "Water")
                     {
-                        effectiveness -= 0.5;
+                        effectiveness /= 2;
                     }
                     if (move.Type == "Grass")
                     {
-                        effectiveness += 0.5;
+                        effectiveness *= 2;
 
                     }
                     if (move.Type == "Fire")
                     {
-                        effectiveness -= 0.5;
+                        effectiveness /= 2;
 
                     }
                 }
@@ -503,17 +503,17 @@ namespace Pokemon_like
                 {
                     if (move.Type == "Water")
                     {
-                        effectiveness += 0.5;
+                        effectiveness *= 2;
 
                     }
                     if (move.Type == "Grass")
                     {
-                        effectiveness -= 0.5;
+                        effectiveness /= 2;
 
                     }
                     if (move.Type == "Fire")
                     {
-                        effectiveness -= 0.5;
+                        effectiveness /= 2;
 
                     }
                 }
@@ -521,17 +521,29 @@ namespace Pokemon_like
                 {
                     if (move.Type == "Water")
                     {
-                        effectiveness -= 0.5;
+                        effectiveness /= 2;
 
                     }
                     if (move.Type == "Grass")
                     {
-                        effectiveness -= 0.5;
+                        effectiveness /= 2;
 
                     }
                     if (move.Type == "Fire")
                     {
-                        effectiveness += 0.5;
+                        effectiveness *= 2;
+
+                    }
+                    if (move.Type == "Poison")
+                    {
+                        effectiveness /= 2;
+                    }
+                }
+                if (type == "Poison")
+                {   
+                    if (move.Type == "Grass")
+                    {
+                        effectiveness /= 2;
 
                     }
                 }
