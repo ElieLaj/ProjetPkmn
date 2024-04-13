@@ -31,9 +31,9 @@ namespace Pokemon_like
             Move ember = new Move("Ember", "Fire", 40);
 
             List<Move> moveSetBasic = [tackle, scratch, lick, waterGun];
-            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 16, 8, 20, 30, 5, 64, moveSetBasic);
-            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 20, 5, 25, 27, 5, 64, moveSetBasic);
-            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass"], 14, 10, 17, 33, 5, 64, moveSetBasic);
+            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 10, 8, 9, 17, 5, 64, moveSetBasic);
+            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 12, 5, 11, 16, 5, 64, moveSetBasic);
+            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass"], 8, 10, 8, 19, 5, 64, moveSetBasic);
 
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
@@ -176,15 +176,26 @@ namespace Pokemon_like
 
             }
 
-            public void takeDamage(Move move, int attack, double stab)
+            public void takeDamage(Move move, Pokemon attacker)
             {
                 Random random = new Random();
+                double stab = 1;
+                double effectiveness = typeCalculator(Type, move);
 
-                int damage =(int) ((attack + move.Damage / 8) * stab);
-                damage -= Defense;
+                foreach (string type in attacker.Type)
+                {
+                    if (move.Type == type)
+                    {
+                        stab = 1.5;
+                    }
+                }
+                
+
+
+                int damage =(int) (((((attacker.Level * 0.4 + 2) * attacker.Attack * move.Damage) / (50 * Defense)) + 2) * stab * effectiveness);
                 if(damage <= 0) { damage = 1; }
-                //double modifier = (random.NextDouble() + 1);
-                //Console.WriteLine(modifier);
+                double modifier = (random.NextDouble() + 1);
+                damage = (int)(damage * modifier);
                 //Health -= Convert.ToInt32(Math.Floor(damage * modifier)) ;
                 if(Health - damage < 0)
                 {
@@ -205,16 +216,9 @@ namespace Pokemon_like
                 {
                     Move _move = (Move)move;
                     Console.WriteLine(Name + " used " + _move.Name);
-                    double stab = 1;
-                    foreach(string type in Type)
-                    {
-                        if (_move.Type == type)
-                        {
-                            stab = 1.5;
-                        }
-                    }
                     
-                    target.takeDamage(_move, Attack, stab);
+                    
+                    target.takeDamage(_move, this);
                 }
                 else
                 {
@@ -227,16 +231,9 @@ namespace Pokemon_like
             {
                 Move move = Moves[new Random().Next(Moves.Count)];
                 Console.WriteLine(Name + " used " + move.Name);
-                double stab = 1;
-                foreach (string type in Type)
-                {
-                    if (move.Type == type)
-                    {
-                        stab = 1.5;
-                    }
-                }
 
-                target.takeDamage(move, Attack, stab);
+
+                target.takeDamage(move, this);
             }
 
             public void ShowHealthBar()
@@ -480,6 +477,67 @@ namespace Pokemon_like
                 }
             }
         }
+        public static double typeCalculator(List<string> pkmnType, Move move)
+        {
+            double effectiveness = 1;
+            foreach (string type in pkmnType)
+            {
+                if (type == "Water")
+                {
+                    if (move.Type == "Water")
+                    {
+                        effectiveness -= 0.5;
+                    }
+                    if (move.Type == "Grass")
+                    {
+                        effectiveness += 0.5;
+
+                    }
+                    if (move.Type == "Fire")
+                    {
+                        effectiveness -= 0.5;
+
+                    }
+                }
+                if (type == "Fire")
+                {
+                    if (move.Type == "Water")
+                    {
+                        effectiveness += 0.5;
+
+                    }
+                    if (move.Type == "Grass")
+                    {
+                        effectiveness -= 0.5;
+
+                    }
+                    if (move.Type == "Fire")
+                    {
+                        effectiveness -= 0.5;
+
+                    }
+                }
+                if (type == "Grass")
+                {
+                    if (move.Type == "Water")
+                    {
+                        effectiveness -= 0.5;
+
+                    }
+                    if (move.Type == "Grass")
+                    {
+                        effectiveness -= 0.5;
+
+                    }
+                    if (move.Type == "Fire")
+                    {
+                        effectiveness += 0.5;
+
+                    }
+                }
+            }
+            return effectiveness;
+        } 
         public static void Battle(Trainer trainer, Pokemon pkmn2)
         {
             Pokemon pkmn1 = trainer.Pokemons[0];
