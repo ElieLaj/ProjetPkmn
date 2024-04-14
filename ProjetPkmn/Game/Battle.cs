@@ -16,12 +16,15 @@ namespace ProjetPkmn.Game
             Pokemon pkmn1 = trainer.Pokemons[0];
             bool escaped = false;
             bool captured = false;
-            while ((pkmn1.Health > 0 && pkmn2.Health > 0) && !escaped && !captured)
+            while (pkmn1.Health > 0 && pkmn2.Health > 0 && !escaped && !captured)
             {
 
                 Console.Clear();
                 pkmn1.ShowHealthBar();
                 pkmn2.ShowHealthBar();
+
+                if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
+                { break; }
 
                 if (pkmn2.Speed > pkmn1.Speed)
                 {
@@ -29,7 +32,7 @@ namespace ProjetPkmn.Game
 
                     PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
                     if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
-                        break;
+                        { break; }
                     pkmn1 = trainer.Pokemons[0];
 
                 }
@@ -38,7 +41,8 @@ namespace ProjetPkmn.Game
 
                     PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
                     if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
-                        break;
+                    { break; }
+;
                     pkmn1 = trainer.Pokemons[0];
 
                     pkmn2.useRandomMove(pkmn1);
@@ -50,7 +54,7 @@ namespace ProjetPkmn.Game
                     {
                         PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
                         if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
-                            break;
+                        { break; }
                         pkmn1 = trainer.Pokemons[0];
 
                         pkmn2.useRandomMove(pkmn1);
@@ -60,7 +64,7 @@ namespace ProjetPkmn.Game
                         pkmn2.useRandomMove(pkmn1);
 
                         if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
-                            break;
+                        { break; }
 
                         PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
                         pkmn1 = trainer.Pokemons[0];

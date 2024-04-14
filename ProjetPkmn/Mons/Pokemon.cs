@@ -84,27 +84,31 @@ namespace ProjetPkmn.Mons
             Random random = new Random();
             double stab = 1;
             double effectiveness = TypeCalculator.Calculate(Type, move);
+            int damage = 0;
 
             foreach (string type in attacker.Type)
             {
                 if (move.Type == type)
                 {
-                    stab = 1.5;
+                    stab = 1.3;
                 }
             }
-
-            int damage = (int)((((attacker.Level * 0.4 + 2) * attacker.Attack * move.Damage) / (50 * Defense) + 2) * stab * effectiveness);
-            if (damage <= 0) { damage = 1; }
-            double modifier = random.NextDouble() + 1;
-            damage = (int)(damage * modifier);
-            if (Health - damage < 0)
+            if(effectiveness != 0)
             {
-                Health = 0;
+                damage = (int)((((attacker.Level * 0.4 + 2) * attacker.Attack * move.Damage) / (50 * Defense) + 2) * stab * effectiveness);
+                if (damage <= 0) { damage = 1; }
+                double modifier = random.NextDouble() + 1;
+                damage = (int)(damage * modifier);
+                if (Health - damage < 0)
+                {
+                    Health = 0;
+                }
+                else
+                {
+                    Health -= damage;
+                }
             }
-            else
-            {
-                Health -= damage;
-            }
+            
             Console.WriteLine(Name + " has taken " + damage + " !");
             while (Console.ReadKey().Key != ConsoleKey.Enter) { }
         }
