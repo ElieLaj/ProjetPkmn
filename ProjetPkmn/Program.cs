@@ -29,17 +29,19 @@ namespace ProjetPkmn
 
             Console.WriteLine("Welcome back " + user.Name);
 
-            Move tackle = new Move("Tackle", "Normal", 20 );
-            Move scratch = new Move("Scratch", "Normal", 20);
+            Move tackle = new Move("Tackle", "Normal", 40 );
+            Move scratch = new Move("Scratch", "Normal", 40);
             Move lick = new Move("Lick", "Ghost", 20);
             Move waterGun = new Move("Water Gun", "Water", 40);
+            Move rapidSpin = new Move("Rapid Spin", "Normal", 20);
+            Move waterPulse = new Move("Water Pulse", "Water", 60);
 
             Move ember = new Move("Ember", "Fire", 40);
 
-            List<Move> moveSetBasic = [tackle, scratch, lick, waterGun];
-            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 48, 65, 43, 44, 5, 64, moveSetBasic);
-            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 52, 43, 65, 39, 5, 64, moveSetBasic);
-            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 49, 49, 45, 45, 5, 64, moveSetBasic);
+            Dictionary<int, Move> carapuceMoveSet =  new Dictionary<int, Move>{ { 1, lick }, { 3, scratch }, { 4, rapidSpin }, { 5, waterGun }, {6, waterPulse } } ;
+            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 48, 65, 43, 44, 5, 64, carapuceMoveSet);
+            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 52, 43, 65, 39, 5, 64, carapuceMoveSet);
+            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 49, 49, 45, 45, 5, 64, carapuceMoveSet);
 
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);

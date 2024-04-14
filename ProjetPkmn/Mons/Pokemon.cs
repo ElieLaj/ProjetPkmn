@@ -22,10 +22,10 @@ namespace ProjetPkmn.Mons
         public int BaseExp { get; set; }
 
         public List<Move> Moves { get; set; }
-        public List<Move> LearnSet { get; set; }
+        public Dictionary<int, Move> LearnSet { get; set; }
 
 
-        public Pokemon(string _name, List<string> _type, int _attack, int _defense, int _speed, int _health, int _level, int _baseExp, List<Move> _learnset)
+        public Pokemon(string _name, List<string> _type, int _attack, int _defense, int _speed, int _health, int _level, int _baseExp, Dictionary<int, Move> _learnset)
         {
             Level = _level;
             Name = _name;
@@ -43,40 +43,29 @@ namespace ProjetPkmn.Mons
             LearnSet = _learnset;
             if (_learnset.Count < 4)
             {
-                Moves = _learnset;
+                Moves.AddRange(_learnset.Values);
             }
             else
             {
-                Moves = _learnset.GetRange(0, 4);
+                int j = 0;
+                for (int i = Level; i > 0; i--)
+                {
+                    if (_learnset.ContainsKey(i))
+                    {
+                        Moves.Add(_learnset[i]);
+                        j++;
+                    }
+                    if(j == 4)
+                    {
+                        break;
+                    }
+                }
             }
         }
 
         private int statCalculator(int stat)
         {
             return (int)Math.Floor(0.01 * (stat * 2 + new Random().Next(0, 31)) * Level + 5);
-        }
-
-        public void gainExp(int exp, int opponentLevel)
-        {
-            int _exp = exp * opponentLevel / 7;
-            Console.WriteLine(Name + " has gained " + _exp + " EXP!");
-
-            if (Exp + _exp < ExpThreshold)
-            {
-                Exp += _exp;
-            }
-            else
-            {
-                int tmpExp = Exp + _exp - ExpThreshold;
-                Level += 1;
-                Exp = 0 + tmpExp;
-
-                Console.WriteLine(Name + " has leveled up to the level: " + Level + " !");
-                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-
-                ExpThreshold = (int)(1.2 * (Math.Pow(Level, 3) - 15 * (Level * Level) + 100 * Level - 140));
-            }
-
         }
 
         private void takeDamage(Move move, Pokemon attacker)
@@ -140,6 +129,39 @@ namespace ProjetPkmn.Mons
         {
             Console.WriteLine(Name + ": " + Health + " / " + MaxHealth);
         }
+        public void gainExp(int exp, int opponentLevel)
+        {
+            int _exp = exp * opponentLevel / 7;
+            Console.WriteLine(Name + " has gained " + _exp + " EXP!");
+
+            if (Exp + _exp < ExpThreshold)
+            {
+                Exp += _exp;
+            }
+            else
+            {
+                int tmpExp = Exp + _exp - ExpThreshold;
+                Level += 1;
+                Exp = 0 + tmpExp;
+                Console.WriteLine(Name + " has leveled up to the level: " + Level + " !");
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+
+                checkMoveLvlUp();
+
+                ExpThreshold = (int)(1.2 * (Math.Pow(Level, 3) - 15 * (Level * Level) + 100 * Level - 140));
+            }
+        }
+
+        private void checkMoveLvlUp()
+        {
+            if (LearnSet.ContainsKey(Level))
+            {
+                Move move = LearnSet[Level];
+                Console.WriteLine(Name + " is trying to learn" + move.Name + " !");
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                LearnMove(move);
+            }
+        }
 
         public void LearnMove(Move move)
         {
@@ -164,6 +186,7 @@ namespace ProjetPkmn.Mons
 
             }
         }
+
 
         public object ChooseMove()
         {
