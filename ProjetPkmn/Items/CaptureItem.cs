@@ -9,10 +9,10 @@ namespace ProjetPkmn.Items
 {
     public class CaptureItem : Item
     {
-        public int Rate { get; set; }
+        public double Rate { get; set; }
 
 
-        public CaptureItem(string _name, int _cost, int _rate)
+        public CaptureItem(string _name, int _cost, double _rate)
         {
             Name = _name;
             Cost = _cost;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProjetPkmn.Mons;
 using ProjetPkmn.Inputs;
+using ProjetPkmn.Items;
 
 namespace ProjetPkmn.Game
 {
@@ -14,8 +15,8 @@ namespace ProjetPkmn.Game
         {
             Pokemon pkmn1 = trainer.Pokemons[0];
             bool escaped = false;
-
-            while ((pkmn1.Health > 0 && pkmn2.Health > 0) && !escaped)
+            bool captured = false;
+            while ((pkmn1.Health > 0 && pkmn2.Health > 0) && !escaped && !captured)
             {
 
                 Console.Clear();
@@ -26,8 +27,8 @@ namespace ProjetPkmn.Game
                 {
                     pkmn2.useRandomMove(pkmn1);
 
-                    PerformTurn(pkmn1, pkmn2, trainer, ref escaped);
-                    if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped)
+                    PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
+                    if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
                         break;
                     pkmn1 = trainer.Pokemons[0];
 
@@ -35,8 +36,8 @@ namespace ProjetPkmn.Game
                 else if (pkmn1.Speed > pkmn2.Speed)
                 {
 
-                    PerformTurn(pkmn1, pkmn2, trainer, ref escaped);
-                    if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped)
+                    PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
+                    if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
                         break;
                     pkmn1 = trainer.Pokemons[0];
 
@@ -47,8 +48,8 @@ namespace ProjetPkmn.Game
                 {
                     if (new Random().Next(0, 2) == 0)
                     {
-                        PerformTurn(pkmn1, pkmn2, trainer, ref escaped);
-                        if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped)
+                        PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
+                        if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
                             break;
                         pkmn1 = trainer.Pokemons[0];
 
@@ -58,10 +59,10 @@ namespace ProjetPkmn.Game
                     {
                         pkmn2.useRandomMove(pkmn1);
 
-                        if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped)
+                        if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
                             break;
 
-                        PerformTurn(pkmn1, pkmn2, trainer, ref escaped);
+                        PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
                         pkmn1 = trainer.Pokemons[0];
                     }
                 }
@@ -81,18 +82,19 @@ namespace ProjetPkmn.Game
                 Console.WriteLine("You won 500 Pokedollars");
                 trainer.Pokedollars += 500;
             }
-            else
+            else if(escaped)
             {
                 Console.WriteLine("You managed to run away but lost 200 Pokedollars... ");
                 trainer.Pokedollars -= 200;
             }
+
             Console.WriteLine("Press Enter to start again");
             while (Console.ReadKey().Key != ConsoleKey.Enter) { }
         }
 
 
 
-        private static void PerformTurn(Pokemon trainerMon, Pokemon pkmn2, Trainer trainer, ref bool escaped)
+        private static void PerformTurn(Pokemon trainerMon, Pokemon pkmn2, Trainer trainer, ref bool escaped, ref bool captured)
         {
             int input = 4;
 
@@ -106,7 +108,7 @@ namespace ProjetPkmn.Game
                         trainerMon.useMove(pkmn2, ref input);
                         break;
                     case 1:
-                        trainer.UseItem(ref input);
+                        trainer.ChooseItemType(ref input, ref captured, pkmn2);
                         break;
                     case 2:
                         escaped = trainer.AttemptEscape(pkmn2);

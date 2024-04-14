@@ -87,12 +87,12 @@ namespace ProjetPkmn.Inputs
 
 
 
-        public static object Item(List<HealingItem> itemList)
+        public static object Item(List<Item> itemList)
         {
             bool isNotFinished = true;
             int currentInput = 0;
             List<string> inputs = new List<string>();
-            foreach (HealingItem item in itemList)
+            foreach (Item item in itemList)
             {
                 inputs.Add(item.Name + " " + item.Cost + " Pokedollars");
             }
@@ -114,6 +114,24 @@ namespace ProjetPkmn.Inputs
 
 
             }
+
+        }
+        public static int ItemType()
+        {
+            bool isNotFinished = true;
+            int currentInput = 0;
+
+            List<string> inputs = ["Healing Items", "Pokeballs"];
+
+            inputs.Add("-- Leave --");
+
+            while (isNotFinished == true)
+            {
+                Console.Clear();
+                (isNotFinished, currentInput) = Choices.Loop(inputs, currentInput);
+            }
+
+            return currentInput;
 
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using ProjetPkmn.Inputs;
@@ -10,7 +11,7 @@ namespace ProjetPkmn.Stores
 {
     internal class Store
     {
-        public static void PokeStore(List<HealingItem> items, Trainer trainer)
+        public static void PokeStore(List<Item> items, Trainer trainer)
         {
             int totalItem = trainer.HealingItems.Count;
             object item = "";
@@ -22,25 +23,41 @@ namespace ProjetPkmn.Stores
                 {
                     break;
                 }
-                else if (item is HealingItem)
+                else
                 {
-                    HealingItem item2 = (HealingItem)item;
-                    if (trainer.Pokedollars - item2.Cost >= 0)
+                    if(item is HealingItem)
                     {
-                        trainer.HealingItems.Add(item2);
-                        trainer.Pokedollars -= item2.Cost;
-                        Console.WriteLine("You chose " + item2.Name);
-                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        HealingItem _item = (HealingItem)item;
+                        if (trainer.Pokedollars - _item.Cost >= 0)
+                        {
+                            trainer.HealingItems.Add(_item);
+                            trainer.Pokedollars -= _item.Cost;
+                            Console.WriteLine("You chose " + _item.Name);
+                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You don't have enough money for " + _item.Name);
+                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        }
                     }
-                    else
+                    else if (item is CaptureItem)
                     {
-                        Console.WriteLine("You don't have enough money for " + item2.Name);
-                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        CaptureItem _item = (CaptureItem)item;
+                        if (trainer.Pokedollars - _item.Cost >= 0)
+                        {
+                            trainer.CaptureItems.Add(_item);
+                            trainer.Pokedollars -= _item.Cost;
+                            Console.WriteLine("You chose " + _item.Name);
+                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You don't have enough money for " + _item.Name);
+                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        }
                     }
-
                 }
-
-
             }
         }
     }

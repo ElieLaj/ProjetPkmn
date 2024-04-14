@@ -25,7 +25,7 @@ namespace ProjetPkmn
             string username = Console.ReadLine();
             Console.Clear();
 
-            Trainer user = new Trainer(username, 3000, new List<Pokemon>(), new List<HealingItem>(), new List<CaptureItem>());
+            Trainer user = new Trainer(username, 3000, new List<Pokemon>(), new List<Item>(), new List<Item>());
 
             Console.WriteLine("Welcome back " + user.Name);
 
@@ -44,15 +44,19 @@ namespace ProjetPkmn
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
 
+            CaptureItem pokeBall = new CaptureItem("Pokeball", 200, 1);
+            CaptureItem superBall = new CaptureItem("Super Ball", 500, 1.5);
 
             List<Pokemon> pokedex = new List<Pokemon>();
             pokedex.Add(carapuce);
             pokedex.Add(bulbizarre);
             pokedex.Add(salemeche);
 
-            List<HealingItem> items = new List<HealingItem>();
+            List<Item> items = new List<Item>();
             items.Add(potion);
             items.Add(superPotion);
+            items.Add(pokeBall);
+            items.Add(superBall);
 
             while (true)
             {
