@@ -20,10 +20,20 @@ namespace ProjetPkmn
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello user, welcome to the pokemon-like");
-            Console.WriteLine("Choose your username before the game starts");
-            string username = Console.ReadLine();
-            Console.Clear();
+
+            string username = "";
+
+            do
+            {
+                Console.Clear();
+
+                Console.WriteLine("Hello user, welcome to the pokemon-like");
+                Console.WriteLine("Choose your username before the game starts");
+                Console.WriteLine("Please enter a username longer than 3 characters: ");
+
+                username = Console.ReadLine();
+            } while (username.Length <= 3);
+
 
             Trainer user = new Trainer(username, 3000, new List<Pokemon>(), new List<Item>(), new List<Item>());
 
@@ -37,11 +47,28 @@ namespace ProjetPkmn
             Move waterPulse = new Move("Water Pulse", "Water", 60);
 
             Move ember = new Move("Ember", "Fire", 40);
+            Move fireFang = new Move("Fire Fang", "Fire", 65);
+
+            Move vineWhip = new Move("Vine Whip", "Grass", 40);
+            Move acid = new Move("Acid", "Poison", 50);
+
+            Move machPunch = new Move("Mach Punch", "Fighting", 50);
+            Move bite = new Move("Bite", "Dark", 60);
 
             Dictionary<int, Move> carapuceMoveSet =  new Dictionary<int, Move>{ { 1, lick }, { 3, scratch }, { 4, rapidSpin }, { 5, waterGun }, {6, waterPulse } } ;
+            Dictionary<int, Move> salemecheMoveSet = new Dictionary<int, Move> { { 1, lick }, { 3, scratch }, { 4, rapidSpin }, { 5, ember }, { 6, fireFang } };
+            Dictionary<int, Move> bulbizarreMoveSet = new Dictionary<int, Move> { { 1, lick }, { 3, tackle }, { 4, rapidSpin }, { 5, vineWhip }, { 6, acid } };
+
+            Dictionary<int, Move> basicMoveSet = new Dictionary<int, Move> { { 1, lick }, { 3, tackle }, { 4, rapidSpin }, { 5, machPunch }, { 6, bite } };
+
+
             Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 48, 65, 43, 44, 5, 64, carapuceMoveSet);
-            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 52, 43, 65, 39, 5, 64, carapuceMoveSet);
-            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 49, 49, 45, 45, 5, 64, carapuceMoveSet);
+            Pokemon salemeche = new Pokemon("Salamèche", ["Fire"], 52, 43, 65, 39, 5, 64, salemecheMoveSet);
+            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 49, 49, 45, 45, 5, 64, bulbizarreMoveSet);
+
+            Pokemon rattata = new Pokemon("Rattata", ["Normal"], 48, 65, 43, 44, 5, 64, basicMoveSet);
+            Pokemon roucool = new Pokemon("Roucool", ["Normal", "Flying"], 52, 43, 65, 39, 5, 64, basicMoveSet);
+            Pokemon ferosinge = new Pokemon("Férosinge", ["Fighting"], 49, 49, 45, 45, 5, 64, basicMoveSet);
 
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
@@ -53,6 +80,11 @@ namespace ProjetPkmn
             pokedex.Add(carapuce);
             pokedex.Add(bulbizarre);
             pokedex.Add(salemeche);
+
+            List<Pokemon> wildPokemons = new List<Pokemon>();
+            wildPokemons.Add(rattata);
+            wildPokemons.Add(roucool);
+            wildPokemons.Add(ferosinge);
 
             List<Item> items = new List<Item>();
             items.Add(potion);
@@ -88,7 +120,7 @@ namespace ProjetPkmn
                             }
                         }
                         Console.WriteLine("May luck be on your side !");
-                        Battle.Fight(user, pokedex[new Random().Next(0, pokedex.Count - 1)]);
+                        Battle.Fight(user, wildPokemons[new Random().Next(0, wildPokemons.Count - 1)]);
                         break;
                     case 1:
                         Console.Clear();
