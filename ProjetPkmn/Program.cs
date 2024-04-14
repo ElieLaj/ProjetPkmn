@@ -9,6 +9,7 @@ using ProjetPkmn.Items;
 using ProjetPkmn.Mons;
 using ProjetPkmn.Inputs;
 using ProjetPkmn.Game;
+using ProjetPkmn.Stores;
 
 using static System.Net.Mime.MediaTypeNames;
 using static ProjetPkmn.Program;
@@ -85,7 +86,7 @@ namespace ProjetPkmn
                         break;
                     case 1:
                         Console.Clear();
-                        PokeStore(items, user);
+                        Store.PokeStore(items, user);
                         break;   
                         case 2:
                         Console.Write("Healing in process");
@@ -113,50 +114,6 @@ namespace ProjetPkmn
                     break;
                 }
             }
-        }
- 
-        
-
-        
-
-       
-
-
-
-        
-
-        public static void PokeStore(List<HealingItem> items, Trainer trainer)
-        {
-            int totalItem = trainer.HealingItems.Count;
-            object item = "";
-            while (true)
-            {
-                Console.WriteLine("Merchand: What do you want to buy traveler ?");
-                item = Input.Item(items);
-                if(item is string)
-                {
-                    break;
-                }
-                else if(item is HealingItem) 
-                {
-                    HealingItem item2 = (HealingItem)item;
-                    if(trainer.Pokedollars - item2.Cost >= 0)
-                    {
-                        trainer.HealingItems.Add(item2);
-                        trainer.Pokedollars -= item2.Cost;
-                        Console.WriteLine("You chose " + item2.Name);
-                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                    }
-                    else
-                    {
-                        Console.WriteLine("You don't have enough money for " + item2.Name);
-                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                    }
-                    
-                }
-
-               
-            }
-        }
+        } 
     }
 }
