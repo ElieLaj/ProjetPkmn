@@ -31,9 +31,9 @@ namespace Pokemon_like
             Move ember = new Move("Ember", "Fire", 40);
 
             List<Move> moveSetBasic = [tackle, scratch, lick, waterGun];
-            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 10, 8, 9, 17, 5, 64, moveSetBasic);
-            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 12, 8, 11, 16, 5, 64, moveSetBasic);
-            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 8, 10, 8, 19, 5, 64, moveSetBasic);
+            Pokemon carapuce = new Pokemon("Carapuce", ["Water"], 48, 65, 43, 44, 5, 64, moveSetBasic);
+            Pokemon salemeche = new Pokemon("Salameche", ["Fire"], 52, 43, 65, 39, 5, 64, moveSetBasic);
+            Pokemon bulbizarre = new Pokemon("Bulbizarre", ["Grass", "Poison"], 49, 49, 45, 45, 5, 64, moveSetBasic);
 
             HealingItem potion = new HealingItem("Potion", 300, 20);
             HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
@@ -130,14 +130,14 @@ namespace Pokemon_like
 
             public Pokemon(string _name, List<string> _type, int _attack, int _defense, int _speed, int _health, int _level, int _baseExp, List<Move> _learnset)
             {
+                Level = _level;
                 Name = _name;
                 Type = _type;
-                Attack = _attack;
-                Defense = _defense;
-                Speed =_speed;
-                Health = _health;
-                Level = _level;
-                MaxHealth = _health;
+                Attack = statCalculator(_attack);
+                Defense = statCalculator(_defense);
+                Speed = statCalculator(_speed);
+                Health = (int) (Math.Floor(0.01 * ( 2 * _health + new Random().Next(0, 31)) * Level) + Level + 10) ;
+                MaxHealth = Health;
                 Moves = new List<Move>();
                 Exp = 0;
                 BaseExp = _baseExp;
@@ -152,6 +152,11 @@ namespace Pokemon_like
                 {
                     Moves = _learnset.GetRange(0, 4);
                 }
+            }
+
+            private int statCalculator(int stat)
+            {
+                return (int)(Math.Floor((0.01 * (stat * 2 + new Random().Next(0, 31)) * Level) + 5));
             }
 
             public void gainExp(int exp, int opponentLevel) {  
@@ -176,7 +181,7 @@ namespace Pokemon_like
 
             }
 
-            public void takeDamage(Move move, Pokemon attacker)
+            private void takeDamage(Move move, Pokemon attacker)
             {
                 Random random = new Random();
                 double stab = 1;
@@ -189,8 +194,6 @@ namespace Pokemon_like
                         stab = 1.5;
                     }
                 }
-                
-
 
                 int damage =(int) (((((attacker.Level * 0.4 + 2) * attacker.Attack * move.Damage) / (50 * Defense)) + 2) * stab * effectiveness);
                 if(damage <= 0) { damage = 1; }
@@ -294,16 +297,11 @@ namespace Pokemon_like
 
             public void Heal(int amount)
             {
-                
-                
-                
                     Health += amount;
                     if (Health > MaxHealth)
                     {
                         Health = MaxHealth;
                     }
-                
-                
             }
         }
         public class Move
@@ -555,7 +553,7 @@ namespace Pokemon_like
             Pokemon pkmn1 = trainer.Pokemons[0];
             bool escaped = false;
 
-            while (pkmn1.Health > 0 && pkmn2.Health > 0 && !escaped)
+            while ((pkmn1.Health > 0 && pkmn2.Health > 0) && !escaped)
             {
 
                 Console.Clear();
