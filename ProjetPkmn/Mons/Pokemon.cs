@@ -68,6 +68,17 @@ namespace ProjetPkmn.Mons
             return (int)Math.Floor(0.01 * (stat * 2 + new Random().Next(0, 31)) * Level + 5);
         }
 
+        public void Summary()
+        {
+            Console.WriteLine("Health: " + Health + " / " + MaxHealth);
+            Console.WriteLine("Attack: " + Attack);
+            Console.WriteLine("Defense: " + Defense);
+            Console.WriteLine("Speed: " + Speed);
+            Console.WriteLine("\nPress enter to leave");
+
+            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+        }
+
         private void takeDamage(Move move, Pokemon attacker)
         {
             Random random = new Random();

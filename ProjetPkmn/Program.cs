@@ -94,9 +94,9 @@ namespace ProjetPkmn
 
             while (true)
             {
+                List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter", "Pokemon summary" ,"Leave the game"];
 
-                int value = Input.Menu(user);
-
+                int value = Input.Menu(inputs, user);
 
                 switch (value)
                 {
@@ -122,11 +122,13 @@ namespace ProjetPkmn
                         Console.WriteLine("May luck be on your side !");
                         Battle.Fight(user, wildPokemons[new Random().Next(0, wildPokemons.Count - 1)]);
                         break;
+
                     case 1:
                         Console.Clear();
                         Store.PokeStore(items, user);
-                        break;   
-                        case 2:
+                        break;  
+                        
+                    case 2:
                         Console.Write("Healing in process");
 
                         for (int i = 0; i < 3; i++)
@@ -143,11 +145,26 @@ namespace ProjetPkmn
                         user.Pokedollars -= 900;
                         while (Console.ReadKey().Key != ConsoleKey.Enter) { }
                         break;
-                       
-                            case 3: Console.WriteLine("Merchand: Come again !");
+
+                    case 3:
+
+                        object pkmnSum = Input.Pokemon(user.Pokemons);
+
+                        if (pkmnSum is string)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Pokemon chosenPkmn = (Pokemon)pkmnSum;
+                            chosenPkmn.Summary();
+                            break;
+                        }
+
+                    case 4: Console.WriteLine("See you next time");
                                 break;
                 }
-                if (value == 3)
+                if (value == 4)
                 {
                     break;
                 }

@@ -11,10 +11,8 @@ namespace ProjetPkmn.Inputs
 {
     internal class Input
     {
-        public static int Menu(Trainer user)
+        public static int Menu(List<string>inputs, Trainer user)
         {
-
-            List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter", "Leave the game"];
 
             int currentInput = 0;
 
