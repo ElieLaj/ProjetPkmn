@@ -15,6 +15,14 @@ namespace ProjetPkmn.Mons
         public int Defense { get; set; }
         public int Health { get; set; }
         public int Speed { get; set; }
+        public int IVAttack { get; set; }
+        public int IVDefense { get; set; }
+        public int IVHealth { get; set; }
+        public int IVSpeed { get; set; }
+        public int BaseAttack { get; set; }
+        public int BaseDefense { get; set; }
+        public int BaseHealth { get; set; }
+        public int BaseSpeed { get; set; }
         public int Level { get; set; }
         public int MaxHealth { get; set; }
         public int ExpThreshold { get; set; }
@@ -30,11 +38,24 @@ namespace ProjetPkmn.Mons
             Level = _level;
             Name = _name;
             Type = _type;
-            Attack = statCalculator(_attack);
-            Defense = statCalculator(_defense);
-            Speed = statCalculator(_speed);
-            Health = (int)(Math.Floor(0.01 * (2 * _health + new Random().Next(0, 31)) * Level) + Level + 10);
+
+            BaseHealth = _health;
+            BaseAttack = _attack;
+            BaseDefense = _defense;
+            BaseSpeed = _speed;
+
+            IVAttack = new Random().Next(0, 31);
+            IVDefense = new Random().Next(0, 31);
+            IVHealth = new Random().Next(0, 31);
+            IVSpeed = new Random().Next(0, 31);
+
+            Health = (int)(Math.Floor(0.01 * (2 * BaseHealth + IVHealth) * Level) + Level + 10);
             MaxHealth = Health;
+
+            Attack = statCalculator(BaseAttack, IVAttack);
+            Defense = statCalculator(BaseDefense, IVDefense);
+            Speed = statCalculator(BaseSpeed, IVSpeed);
+
             Moves = new List<Move>();
             Exp = 0;
             BaseExp = _baseExp;
@@ -62,10 +83,27 @@ namespace ProjetPkmn.Mons
                 }
             }
         }
-
-        private int statCalculator(int stat)
+        private void calculateStats()
         {
-            return (int)Math.Floor(0.01 * (stat * 2 + new Random().Next(0, 31)) * Level + 5);
+            int newHealth = (int)(Math.Floor(0.01 * (2 * BaseHealth + IVHealth) * Level) + Level + 10);
+            int newAttack = statCalculator(BaseAttack, IVAttack);
+            int newDefense = statCalculator(BaseDefense, IVDefense);
+            int newSpeed = statCalculator(BaseSpeed, IVSpeed);
+
+            Console.WriteLine(Name + " has gained " + (newHealth - MaxHealth) + " health");
+            Console.WriteLine(Name + " has gained " + (newAttack - Attack) + " attack");
+            Console.WriteLine(Name + " has gained " + (newDefense - Defense) + " defense");
+            Console.WriteLine(Name + " has gained " + (newSpeed - Speed) + " speed");
+
+            MaxHealth = newHealth;
+            Health += newHealth - MaxHealth;
+            Attack = newAttack;
+            Defense = newDefense;
+            Speed = newSpeed;
+        }
+        private int statCalculator(int stat, int IV)
+        {
+            return (int)Math.Floor(0.01 * (stat * 2 + IV) * Level + 5);
         }
 
         public void Summary()
@@ -158,8 +196,11 @@ namespace ProjetPkmn.Mons
                 int tmpExp = Exp + _exp - ExpThreshold;
                 Level += 1;
                 Exp = 0 + tmpExp;
+
                 Console.WriteLine(Name + " has leveled up to the level: " + Level + " !");
                 while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+
+                calculateStats();
 
                 checkMoveLvlUp();
 
@@ -172,7 +213,7 @@ namespace ProjetPkmn.Mons
             if (LearnSet.ContainsKey(Level))
             {
                 Move move = LearnSet[Level];
-                Console.WriteLine(Name + " is trying to learn" + move.Name + " !");
+                Console.WriteLine(Name + " is trying to learn " + move.Name + " - " + move.Damage + " - " + move.Type);
                 while (Console.ReadKey().Key != ConsoleKey.Enter) { }
                 LearnMove(move);
             }
@@ -210,7 +251,7 @@ namespace ProjetPkmn.Mons
             List<string> inputs = new List<string>();
             foreach (Move move in Moves)
             {
-                inputs.Add(move.Name + " - " + move.Type);
+                inputs.Add(move.Name + " - " + move.Damage + " - " + move.Type);
             }
             inputs.Add("-- Cancel --");
 

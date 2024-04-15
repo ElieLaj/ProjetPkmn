@@ -16,6 +16,8 @@ namespace ProjetPkmn.Game
             Pokemon pkmn1 = trainer.Pokemons[0];
             bool escaped = false;
             bool captured = false;
+            Console.WriteLine("You encountered a wild " + pkmn2.Name + " !");
+            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
             while (pkmn1.Health > 0 && pkmn2.Health > 0 && !escaped && !captured)
             {
 
@@ -82,7 +84,7 @@ namespace ProjetPkmn.Game
             else if (pkmn2.Health <= 0)
             {
                 Console.WriteLine(pkmn2.Name + " has fainted !");
-                pkmn1.gainExp((int)(pkmn2.BaseExp * 1.5), pkmn2.Level);
+                pkmn1.gainExp((int)(pkmn2.BaseExp * 5), pkmn2.Level);
                 Console.WriteLine("You won 500 Pokedollars");
                 trainer.Pokedollars += 500;
             }

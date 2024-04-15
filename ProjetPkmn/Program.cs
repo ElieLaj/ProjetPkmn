@@ -94,7 +94,7 @@ namespace ProjetPkmn
 
             while (true)
             {
-                List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter", "Pokemon summary" ,"Leave the game"];
+                List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary" ,"Leave the game"];
 
                 int value = Input.Menu(inputs, user);
 
@@ -117,10 +117,16 @@ namespace ProjetPkmn
 
                                 Console.WriteLine("You chose " + chosenPkmn.Name);
                                 while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                                
                             }
                         }
                         Console.WriteLine("May luck be on your side !");
+
                         Battle.Fight(user, wildPokemons[new Random().Next(0, wildPokemons.Count - 1)]);
+                        foreach (Pokemon wild in wildPokemons)
+                        {
+                            wild.Heal(wild.MaxHealth);
+                        }
                         break;
 
                     case 1:
@@ -129,6 +135,8 @@ namespace ProjetPkmn
                         break;  
                         
                     case 2:
+                        if (user.Pokedollars >= 900)
+                        {
                         Console.Write("Healing in process");
 
                         for (int i = 0; i < 3; i++)
@@ -144,6 +152,12 @@ namespace ProjetPkmn
                         Console.WriteLine("You lost 900 Pokedollars");
                         user.Pokedollars -= 900;
                         while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You don't have enough money for that...");
+                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        }
                         break;
 
                     case 3:
