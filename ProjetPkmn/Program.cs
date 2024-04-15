@@ -76,6 +76,8 @@ namespace ProjetPkmn
             CaptureItem pokeBall = new CaptureItem("Pokeball", 200, 1);
             CaptureItem superBall = new CaptureItem("Super Ball", 500, 1.5);
 
+            ItemPokemon gobou = new ItemPokemon(3000, "Gobou", ["Water"], 48, 65, 43, 44, 5, 64, carapuceMoveSet);
+
             List<Pokemon> pokedex = new List<Pokemon>();
             pokedex.Add(carapuce);
             pokedex.Add(bulbizarre);
@@ -91,10 +93,11 @@ namespace ProjetPkmn
             items.Add(superPotion);
             items.Add(pokeBall);
             items.Add(superBall);
+            items.Add(gobou);
 
             while (true)
             {
-                List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary" ,"Leave the game"];
+                List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary", "Use an item" ,"Leave the game"];
 
                 int value = Input.Menu(inputs, user);
 
@@ -175,10 +178,33 @@ namespace ProjetPkmn
                             break;
                         }
 
-                    case 4: Console.WriteLine("See you next time");
+                    case 4:
+                        object item = Input.Item(user.HealingItems, user.Pokedollars);
+
+                        if (item is IItem)
+                        {
+                            IItem _item = (IItem)item;
+                            if(user.Pokemons.Count > 0)
+                            {
+                                object pkmnHeal = Input.Pokemon(user.Pokemons);
+                                if(pkmnHeal is Pokemon)
+                                {
+                                    _item.Use((Pokemon)pkmnHeal);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("You have no pokemon to heal");
+                                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+
+                            }
+                        }
+                        break;
+
+                    case 5: Console.WriteLine("See you next time");
                                 break;
                 }
-                if (value == 4)
+                if (value == 5)
                 {
                     break;
                 }

@@ -25,7 +25,7 @@ namespace ProjetPkmn.Items
         {
             if (trainer.Pokedollars - Cost >= 0)
             {
-                trainer.CaptureItems.Add(this);
+                trainer.Pokemons.Add(this);
                 trainer.Pokedollars -= Cost;
                 Console.WriteLine("You chose " + Name);
                 while (Console.ReadKey().Key != ConsoleKey.Enter) { }
