@@ -16,8 +16,10 @@ namespace ProjetPkmn.Game
             Pokemon pkmn1 = trainer.Pokemons[0];
             bool escaped = false;
             bool captured = false;
+
             Console.WriteLine("You encountered a wild " + pkmn2.Name + " !");
             while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+
             while (pkmn1.Health > 0 && pkmn2.Health > 0 && !escaped && !captured)
             {
 
@@ -52,6 +54,9 @@ namespace ProjetPkmn.Game
                 }
                 else
                 {
+                    if (pkmn1.Health <= 0 || pkmn2.Health <= 0 || escaped || captured)
+                    { break; }
+
                     if (new Random().Next(0, 2) == 0)
                     {
                         PerformTurn(pkmn1, pkmn2, trainer, ref escaped, ref captured);
