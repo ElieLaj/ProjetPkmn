@@ -48,7 +48,7 @@ namespace ProjetPkmn
         public void UseItem<T>(List<IItem> ItemList, ref int input, ref bool captured, Pokemon opponent)where T : IItem
         {
             if(ItemList.Count > 0 && ItemList != null) { 
-                object item = Input.Item(ItemList);
+                object item = Input.Item(ItemList, Pokedollars);
                 if (item is HealingItem)
                 {
                     HealingItem usedItem = (HealingItem)item;

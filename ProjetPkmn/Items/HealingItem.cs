@@ -29,5 +29,21 @@ namespace ProjetPkmn.Items
             return null;
 
         }
+        public void Buy(Trainer trainer)
+        {
+            if (trainer.Pokedollars - Cost >= 0)
+            {
+                trainer.CaptureItems.Add(this);
+                trainer.Pokedollars -= Cost;
+                Console.WriteLine("You chose " + Name);
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+            }
+            else
+            {
+                Console.WriteLine("You don't have enough money for " + Name);
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+            }
+
+        }
     }
 }

@@ -17,45 +17,15 @@ namespace ProjetPkmn.Stores
             while (true)
             {
                 Console.WriteLine("Merchand: What do you want to buy traveler ?");
-                item = Input.Item(items);
+                item = Input.Item(items, trainer.Pokedollars);
                 if (item is string)
                 {
                     break;
                 }
                 else
                 {
-                    if(item is HealingItem)
-                    {
-                        HealingItem _item = (HealingItem)item;
-                        if (trainer.Pokedollars - _item.Cost >= 0)
-                        {
-                            trainer.HealingItems.Add(_item);
-                            trainer.Pokedollars -= _item.Cost;
-                            Console.WriteLine("You chose " + _item.Name);
-                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                        }
-                        else
-                        {
-                            Console.WriteLine("You don't have enough money for " + _item.Name);
-                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                        }
-                    }
-                    else if (item is CaptureItem)
-                    {
-                        CaptureItem _item = (CaptureItem)item;
-                        if (trainer.Pokedollars - _item.Cost >= 0)
-                        {
-                            trainer.CaptureItems.Add(_item);
-                            trainer.Pokedollars -= _item.Cost;
-                            Console.WriteLine("You chose " + _item.Name);
-                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                        }
-                        else
-                        {
-                            Console.WriteLine("You don't have enough money for " + _item.Name);
-                            while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                        }
-                    }
+                    IItem _item = (IItem) item;
+                    _item.Buy(trainer);
                 }
             }
         }

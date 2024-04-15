@@ -85,7 +85,7 @@ namespace ProjetPkmn.Inputs
 
 
 
-        public static object Item(List<IItem> itemList)
+        public static object Item(List<IItem> itemList, int currency)
         {
             bool isNotFinished = true;
             int currentInput = 0;
@@ -99,6 +99,7 @@ namespace ProjetPkmn.Inputs
             while (isNotFinished == true)
             {
                 Console.Clear();
+                Console.WriteLine("You have: " + currency + " Pokedollars");
                 (isNotFinished, currentInput) = Choices.Loop(inputs, currentInput);
             }
 
