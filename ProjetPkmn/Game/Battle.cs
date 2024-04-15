@@ -60,7 +60,9 @@ namespace ProjetPkmn.Game
                 else if (pkmn2.Health <= 0)
                 {
                     Console.WriteLine(pkmn2.Name + " has fainted !");
-                    pkmn1.gainExp((int)(pkmn2.BaseExp * 5), pkmn2.Level);
+
+                    pkmn1.gainExp(pkmn2.BaseExp * 5, pkmn2.Level);
+
                     Console.WriteLine("You won 500 Pokedollars");
                     while (Console.ReadKey().Key != ConsoleKey.Enter) { }
 

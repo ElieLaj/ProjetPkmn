@@ -184,6 +184,8 @@ namespace ProjetPkmn.Trainers
                 }
                 else
                 {
+                    Console.WriteLine("You only have one pokemon, you can't swap with any other");
+                    while (Console.ReadKey().Key != ConsoleKey.Enter) { }
                     input = 4;
                     return;
                 }

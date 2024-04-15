@@ -102,8 +102,10 @@ namespace ProjetPkmn
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
                 { downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
 
-            Tile[,] arena1 = {
+            Tile[,] arena1Tiles = {
                 { upWall, upWall, upWall, upWall, upWall, upWall, upWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
@@ -128,11 +130,14 @@ namespace ProjetPkmn
 
 
             Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("U "));
-            TrainerNPC fargas = new TrainerNPC(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("V "), 5, 6, 2);
+            TrainerNPC fargas = new TrainerNPC(username, 700, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("V "), 5, 6, 2);
             fargas.Pokemons.Add(rattata);
             fargas.Pokemons.Add(ferosinge);
 
-            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> { fargas }, user, wildPokemons);
+            Plan arena1 = new Plan(9, 7, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
+            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> {  },new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arena1, new Tile("\\/"))} ,user, wildPokemons);
+            
+            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, map1, new Tile("\\/")));
 
             Console.WriteLine("Welcome back " + user.Name);
 
