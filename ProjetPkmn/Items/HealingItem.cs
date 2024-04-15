@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using ProjetPkmn.Mons;
+using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Items
 {

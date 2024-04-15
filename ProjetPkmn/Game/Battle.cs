@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ProjetPkmn.Mons;
 using ProjetPkmn.Inputs;
 using ProjetPkmn.Items;
+using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Game
 {

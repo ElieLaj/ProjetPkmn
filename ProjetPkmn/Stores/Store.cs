@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProjetPkmn.Inputs;
 using ProjetPkmn.Items;
+using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Stores
 {

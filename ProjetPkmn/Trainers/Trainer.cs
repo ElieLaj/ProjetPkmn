@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using ProjetPkmn.Items;
 using ProjetPkmn.Mons;
 using ProjetPkmn.Inputs;
+using ProjetPkmn.Map;
 
-namespace ProjetPkmn
+namespace ProjetPkmn.Trainers
 {
     public class Trainer
     {
@@ -16,38 +17,44 @@ namespace ProjetPkmn
         public List<Pokemon> Pokemons { get; set; }
         public List<IItem> HealingItems { get; set; }
         public List<IItem> CaptureItems { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public Tile Sprite { get; set; }
 
-        public Trainer(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems)
+        public Trainer(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, Tile _sprite)
         {
             Name = _name;
             Pokedollars = _pokedollars;
             Pokemons = _pokemons;
             HealingItems = _items;
             CaptureItems = _captureItems;
-
+            X = 0;
+            Y = 0;
+            Sprite = _sprite;
         }
 
         public void ChooseItemType(ref int input, ref bool captured, Pokemon opponent)
         {
             input = Input.ItemType();
 
-            switch(input)
+            switch (input)
             {
                 case 0:
                     UseItem<HealingItem>(HealingItems, ref input, ref captured, opponent);
                     return;
-                    case 1:
+                case 1:
                     UseItem<CaptureItem>(CaptureItems, ref input, ref captured, opponent);
                     break;
-                        case 2:
-                        input = 4; 
-                        return;
+                case 2:
+                    input = 4;
+                    return;
             }
         }
 
-        public void UseItem<T>(List<IItem> ItemList, ref int input, ref bool captured, Pokemon opponent)where T : IItem
+        public void UseItem<T>(List<IItem> ItemList, ref int input, ref bool captured, Pokemon opponent) where T : IItem
         {
-            if(ItemList.Count > 0 && ItemList != null) { 
+            if (ItemList.Count > 0 && ItemList != null)
+            {
                 object item = Input.Item(ItemList, Pokedollars);
                 if (item is HealingItem)
                 {
@@ -80,7 +87,7 @@ namespace ProjetPkmn
                 else if (item is CaptureItem)
                 {
                     CaptureItem usedItem = (CaptureItem)item;
-                    
+
                     bool isCaptured = usedItem.Use(opponent);
 
                     CaptureItems.Remove(usedItem);
@@ -99,10 +106,10 @@ namespace ProjetPkmn
                         input = 4;
                         return;
                     }
-                        
+
                 }
-                    
-                }
+
+            }
             else
             {
                 input = 4;
@@ -115,7 +122,7 @@ namespace ProjetPkmn
         public bool AttemptEscape(Pokemon opponent)
         {
             int bonus = Pokemons[0].Speed - opponent.Speed;
-            if (new Random().Next(0, 100) > (50 - bonus))
+            if (new Random().Next(0, 100) > 50 - bonus)
             {
                 Console.WriteLine("You managed to run away!");
                 return true;

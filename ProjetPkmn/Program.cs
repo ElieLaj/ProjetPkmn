@@ -10,9 +10,10 @@ using ProjetPkmn.Mons;
 using ProjetPkmn.Inputs;
 using ProjetPkmn.Game;
 using ProjetPkmn.Stores;
-
+using ProjetPkmn.Map;
 using static System.Net.Mime.MediaTypeNames;
 using static ProjetPkmn.Program;
+using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn
 {
@@ -20,26 +21,7 @@ namespace ProjetPkmn
     {
         static void Main(string[] args)
         {
-
-            string username = "";
-
-            do
-            {
-                Console.Clear();
-
-                Console.WriteLine("Hello user, welcome to the pokemon-like");
-                Console.WriteLine("Choose your username before the game starts");
-                Console.WriteLine("Please enter a username longer than 3 characters: ");
-
-                username = Console.ReadLine();
-            } while (username.Length <= 3);
-
-
-            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>());
-
-            Console.WriteLine("Welcome back " + user.Name);
-
-            Move tackle = new Move("Tackle", "Normal", 40 );
+            Move tackle = new Move("Tackle", "Normal", 40);
             Move scratch = new Move("Scratch", "Normal", 40);
             Move lick = new Move("Lick", "Ghost", 20);
             Move waterGun = new Move("Water Gun", "Water", 40);
@@ -55,7 +37,7 @@ namespace ProjetPkmn
             Move machPunch = new Move("Mach Punch", "Fighting", 50);
             Move bite = new Move("Bite", "Dark", 60);
 
-            Dictionary<int, Move> carapuceMoveSet =  new Dictionary<int, Move>{ { 1, lick }, { 3, scratch }, { 4, rapidSpin }, { 5, waterGun }, {6, waterPulse } } ;
+            Dictionary<int, Move> carapuceMoveSet = new Dictionary<int, Move> { { 1, lick }, { 3, scratch }, { 4, rapidSpin }, { 5, waterGun }, { 6, waterPulse } };
             Dictionary<int, Move> salemecheMoveSet = new Dictionary<int, Move> { { 1, lick }, { 3, scratch }, { 4, rapidSpin }, { 5, ember }, { 6, fireFang } };
             Dictionary<int, Move> bulbizarreMoveSet = new Dictionary<int, Move> { { 1, lick }, { 3, tackle }, { 4, rapidSpin }, { 5, vineWhip }, { 6, acid } };
 
@@ -78,26 +60,83 @@ namespace ProjetPkmn
 
             ItemPokemon gobou = new ItemPokemon(3000, "Gobou", ["Water"], 48, 65, 43, 44, 5, 64, carapuceMoveSet);
 
-            List<Pokemon> pokedex = new List<Pokemon>();
-            pokedex.Add(carapuce);
-            pokedex.Add(bulbizarre);
-            pokedex.Add(salemeche);
+            List<Pokemon> pokedex = new List<Pokemon>() {
+                carapuce,
+                bulbizarre,
+                salemeche
+            };
 
-            List<Pokemon> wildPokemons = new List<Pokemon>();
-            wildPokemons.Add(rattata);
-            wildPokemons.Add(roucool);
-            wildPokemons.Add(ferosinge);
 
-            List<IItem> items = new List<IItem>();
-            items.Add(potion);
-            items.Add(superPotion);
-            items.Add(pokeBall);
-            items.Add(superBall);
-            items.Add(gobou);
+            List<Pokemon> wildPokemons = new List<Pokemon>()
+            {
+                rattata,
+                roucool,
+                ferosinge
+            };
+
+            List<IItem> items = new List<IItem>() {
+                potion,
+                superPotion,
+                pokeBall,
+                superBall,
+                gobou
+            };
+
+            Bush bush = new Bush("#");
+
+            Wall sideWall = new Wall("!");
+            Wall upWall = new Wall("-");
+            Wall downWall = new Wall( "_");
+
+            Ground leftDirt = new Ground("| ");
+            Ground middleDirt = new Ground( " ");
+            Ground rightDirt = new Ground(" |");
+
+
+            Tile[,] map1Tiles = { 
+                { upWall, upWall, upWall, upWall, upWall, upWall, upWall }, 
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
+                { downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
+
+            Tile[,] arena1 = {
+                { upWall, upWall, upWall, upWall, upWall, upWall, upWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
+                { downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
+
+
+
+            string username = "";
+
+            do
+            {
+                Console.Clear();
+
+                Console.WriteLine("Hello user, welcome to the pokemon-like");
+                Console.WriteLine("Choose your username before the game starts");
+                Console.WriteLine("Please enter a username longer than 3 characters: ");
+
+                username = Console.ReadLine();
+            } while (username.Length <= 3);
+
+
+            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("U "));
+            TrainerNPC fargas = new TrainerNPC(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("V "), 5, 6, 2);
+            fargas.Pokemons.Add(rattata);
+            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> { fargas }, user, wildPokemons);
+
+            Console.WriteLine("Welcome back " + user.Name);
 
             while (true)
             {
-                List<string> inputs = ["Battle with your pokemons", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary", "Use an item" ,"Leave the game"];
+                List<string> inputs = ["Start the game", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary", "Use an item" ,"Leave the game"];
 
                 int value = Input.Menu(inputs, user);
 
@@ -125,11 +164,7 @@ namespace ProjetPkmn
                         }
                         Console.WriteLine("May luck be on your side !");
 
-                        Battle.Fight(user, wildPokemons[new Random().Next(0, wildPokemons.Count - 1)]);
-                        foreach (Pokemon wild in wildPokemons)
-                        {
-                            wild.Heal(wild.MaxHealth, true, true);
-                        }
+                        map1.Display();
                         break;
 
                     case 1:
@@ -201,8 +236,9 @@ namespace ProjetPkmn
                         }
                         break;
 
-                    case 5: Console.WriteLine("See you next time");
-                                break;
+                    case 5: 
+                        Console.WriteLine("See you next time");
+                        break;
                 }
                 if (value == 5)
                 {
