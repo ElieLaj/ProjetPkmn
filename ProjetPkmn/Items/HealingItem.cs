@@ -8,10 +8,12 @@ using ProjetPkmn.Mons;
 
 namespace ProjetPkmn.Items
 {
-    public class HealingItem : Item
+    public class HealingItem : IItem
     {
 
         public int Heal { get; set; }
+        public int Cost { get; set; }
+        public string Name { get; set; }
 
 
         public HealingItem(string _name, int _cost, int _heal)
@@ -21,7 +23,7 @@ namespace ProjetPkmn.Items
             Heal = _heal;
         }
 
-        public override Pokemon Use(Pokemon target)
+        public Pokemon Use(Pokemon target)
         {
             target.Heal(Heal);
             return null;

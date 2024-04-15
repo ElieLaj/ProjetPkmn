@@ -11,9 +11,8 @@ namespace ProjetPkmn.Stores
 {
     internal class Store
     {
-        public static void PokeStore(List<Item> items, Trainer trainer)
+        public static void PokeStore(List<IItem> items, Trainer trainer)
         {
-            int totalItem = trainer.HealingItems.Count;
             object item = "";
             while (true)
             {

@@ -85,12 +85,12 @@ namespace ProjetPkmn.Inputs
 
 
 
-        public static object Item(List<Item> itemList)
+        public static object Item(List<IItem> itemList)
         {
             bool isNotFinished = true;
             int currentInput = 0;
             List<string> inputs = new List<string>();
-            foreach (Item item in itemList)
+            foreach (IItem item in itemList)
             {
                 inputs.Add(item.Name + " " + item.Cost + " Pokedollars");
             }

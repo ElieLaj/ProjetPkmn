@@ -35,7 +35,7 @@ namespace ProjetPkmn
             } while (username.Length <= 3);
 
 
-            Trainer user = new Trainer(username, 3000, new List<Pokemon>(), new List<Item>(), new List<Item>());
+            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>());
 
             Console.WriteLine("Welcome back " + user.Name);
 
@@ -86,7 +86,7 @@ namespace ProjetPkmn
             wildPokemons.Add(roucool);
             wildPokemons.Add(ferosinge);
 
-            List<Item> items = new List<Item>();
+            List<IItem> items = new List<IItem>();
             items.Add(potion);
             items.Add(superPotion);
             items.Add(pokeBall);

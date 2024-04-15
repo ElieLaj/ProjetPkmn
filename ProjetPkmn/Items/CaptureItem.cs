@@ -7,10 +7,11 @@ using ProjetPkmn.Mons;
 
 namespace ProjetPkmn.Items
 {
-    public class CaptureItem : Item
+    public class CaptureItem : IItem
     {
         public double Rate { get; set; }
-
+        public int Cost { get; set; }
+        public string Name { get; set; }
 
         public CaptureItem(string _name, int _cost, double _rate)
         {
@@ -20,7 +21,7 @@ namespace ProjetPkmn.Items
 
         }
 
-        public override Pokemon Use(Pokemon target)
+        public Pokemon Use(Pokemon target)
         {
             if ((1 - 2 / 3 * (target.Health / target.MaxHealth)) * 200 * Rate >= 160)
             {

@@ -14,10 +14,10 @@ namespace ProjetPkmn
         public string Name { get; set; }
         public int Pokedollars { get; set; }
         public List<Pokemon> Pokemons { get; set; }
-        public List<Item> HealingItems { get; set; }
-        public List<Item> CaptureItems { get; set; }
+        public List<IItem> HealingItems { get; set; }
+        public List<IItem> CaptureItems { get; set; }
 
-        public Trainer(string _name, int _pokedollars, List<Pokemon> _pokemons, List<Item> _items, List<Item> _captureItems)
+        public Trainer(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems)
         {
             Name = _name;
             Pokedollars = _pokedollars;
@@ -45,7 +45,7 @@ namespace ProjetPkmn
             }
         }
 
-        public void UseItem<T>(List<Item> ItemList, ref int input, ref bool captured, Pokemon opponent)where T : Item
+        public void UseItem<T>(List<IItem> ItemList, ref int input, ref bool captured, Pokemon opponent)where T : IItem
         {
             if(ItemList.Count > 0 && ItemList != null) { 
                 object item = Input.Item(ItemList);
