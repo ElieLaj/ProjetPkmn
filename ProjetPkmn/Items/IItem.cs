@@ -11,7 +11,7 @@ namespace ProjetPkmn.Items
     {
         string Name { get; }
         int Cost { get; }
-        Pokemon Use(Pokemon target);
+        bool Use(Pokemon target);
         void Buy(Trainer user);
     }
 }

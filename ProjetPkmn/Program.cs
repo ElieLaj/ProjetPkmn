@@ -70,8 +70,8 @@ namespace ProjetPkmn
             Pokemon roucool = new Pokemon("Roucool", ["Normal", "Flying"], 52, 43, 65, 39, 5, 64, basicMoveSet);
             Pokemon ferosinge = new Pokemon("Férosinge", ["Fighting"], 49, 49, 45, 45, 5, 64, basicMoveSet);
 
-            HealingItem potion = new HealingItem("Potion", 300, 20);
-            HealingItem superPotion = new HealingItem("Super Potion", 700, 50);
+            HealingItem potion = new HealingItem("Potion", 300, 20, false);
+            HealingItem superPotion = new HealingItem("Super Potion", 700, 50, false);
 
             CaptureItem pokeBall = new CaptureItem("Pokeball", 200, 1);
             CaptureItem superBall = new CaptureItem("Super Ball", 500, 1.5);
@@ -125,7 +125,7 @@ namespace ProjetPkmn
                         Battle.Fight(user, wildPokemons[new Random().Next(0, wildPokemons.Count - 1)]);
                         foreach (Pokemon wild in wildPokemons)
                         {
-                            wild.Heal(wild.MaxHealth);
+                            wild.Heal(wild.MaxHealth, true, true);
                         }
                         break;
 
@@ -146,7 +146,7 @@ namespace ProjetPkmn
                         }
                         foreach (Pokemon pokemon in user.Pokemons)
                             {
-                                pokemon.Heal(pokemon.MaxHealth);
+                                pokemon.Heal(pokemon.MaxHealth, true, true);
                             }
                         Console.WriteLine("\nNurse: Your pokemons are healed up and ready to go !");
                         Console.WriteLine("You lost 900 Pokedollars");

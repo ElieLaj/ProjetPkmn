@@ -21,15 +21,15 @@ namespace ProjetPkmn.Items
 
         }
 
-        public Pokemon Use(Pokemon target)
+        public bool Use(Pokemon target)
         {
             if ((1 - 2 / 3 * (target.Health / target.MaxHealth)) * 200 * Rate >= 160)
             {
-                return target;
+                return true;
             }
             else
             {
-                return null;
+                return false;
             }
         }
         public void Buy(Trainer trainer)

@@ -56,13 +56,20 @@ namespace ProjetPkmn
                     if (pkmn is Pokemon)
                     {
                         Pokemon pokemon = (Pokemon)pkmn;
-                        usedItem.Use(pokemon);
+                        bool usable = usedItem.Use(pokemon);
+                        if (usable)
+                        {
+                            HealingItems.Remove(usedItem);
+                            Console.WriteLine("You used " + usedItem.Name + " on " + pokemon.Name + " !");
+                            Console.WriteLine("He gained: " + usedItem.Heal + " health");
+                        }
+                        else
+                        {
+                            input = 4;
+                            return;
+                        }
 
-                        HealingItems.Remove(usedItem);
-                        Console.WriteLine("You used " + usedItem.Name + " on " + pokemon.Name + " !");
-                        Console.WriteLine("He gained: " + usedItem.Heal + " health");
 
-                        
                     }
                     else
                     {
@@ -74,11 +81,11 @@ namespace ProjetPkmn
                 {
                     CaptureItem usedItem = (CaptureItem)item;
                     
-                    object isCaptured = usedItem.Use(opponent);
+                    bool isCaptured = usedItem.Use(opponent);
 
                     CaptureItems.Remove(usedItem);
 
-                    if (isCaptured is Pokemon)
+                    if (isCaptured)
                     {
                         Pokemons.Add(opponent);
                         Console.WriteLine("You've captured " + opponent.Name + " !");

@@ -272,13 +272,31 @@ namespace ProjetPkmn.Mons
 
         }
 
-        public void Heal(int amount)
+        public bool Heal(int amount, bool revive, bool pokemonCenter)
         {
-            Health += amount;
-            if (Health > MaxHealth)
+            if(Health == 0 && !revive)
             {
-                Health = MaxHealth;
+                Console.WriteLine("This pokemon cannot be healed, use a revive or a Pokemon center");
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                return false;
             }
+            else if (Health == MaxHealth && !pokemonCenter)
+            {
+                Console.WriteLine("This pokemon is already at full health");
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                return false;
+            }
+            else
+            {
+                Health += amount;
+                if (Health > MaxHealth)
+                {
+                    Health = MaxHealth;
+                }
+                return true;
+
+            }
+
         }
     }
 }

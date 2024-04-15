@@ -17,9 +17,9 @@ namespace ProjetPkmn.Items
             Cost = _cost;
         }
 
-        public Pokemon Use(Pokemon target)
+        public bool Use(Pokemon target)
         {
-            return this;
+            return true;
         }
         public void Buy(Trainer trainer)
         {
