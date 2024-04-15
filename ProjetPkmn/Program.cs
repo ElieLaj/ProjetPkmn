@@ -130,6 +130,8 @@ namespace ProjetPkmn
             Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("U "));
             TrainerNPC fargas = new TrainerNPC(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("V "), 5, 6, 2);
             fargas.Pokemons.Add(rattata);
+            fargas.Pokemons.Add(ferosinge);
+
             Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> { fargas }, user, wildPokemons);
 
             Console.WriteLine("Welcome back " + user.Name);

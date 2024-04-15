@@ -21,14 +21,13 @@ namespace ProjetPkmn.Trainers
             SightRange = _sightRange;
         }
 
-        public void BattleOnSight(Trainer player)
+        public bool BattleOnSight(Trainer player)
         {
             if(player.X  == X && player.Y  - Y <= SightRange)
             {
-                Console.WriteLine("I saw you now it's time to fight !");
-                while (Console.ReadKey().Key != ConsoleKey.Enter) { }
-                Battle.Fight(player, Pokemons[0]);
+               return true;
             }
+            else return false;
         }
     }
 }

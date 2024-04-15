@@ -33,7 +33,7 @@ namespace ProjetPkmn.Trainers
             Sprite = _sprite;
         }
 
-        public void ChooseItemType(ref int input, ref bool captured, Pokemon opponent)
+        public void ChooseItemType(ref int input, ref bool captured, Pokemon opponent, bool isTrainer)
         {
             input = Input.ItemType();
 
@@ -43,7 +43,16 @@ namespace ProjetPkmn.Trainers
                     UseItem<HealingItem>(HealingItems, ref input, ref captured, opponent);
                     return;
                 case 1:
-                    UseItem<CaptureItem>(CaptureItems, ref input, ref captured, opponent);
+                    if(!isTrainer)
+                    {
+                        UseItem<CaptureItem>(CaptureItems, ref input, ref captured, opponent);
+                    }
+                    else
+                    {
+                        Console.WriteLine("You can't catch a trainer's pokemon !");
+                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        input = 4;
+                    }
                     break;
                 case 2:
                     input = 4;
@@ -147,11 +156,19 @@ namespace ProjetPkmn.Trainers
                         while (Console.ReadKey().Key != ConsoleKey.Enter) { }
 
                     }
+                    
 
                 } while (pkmn1 == pkmn);
 
                 if (pkmn is Pokemon chosenPkmn)
                 {
+                    if(chosenPkmn.Health == 0)
+                    {
+                        Console.WriteLine("You can't swap to a ko pokemon");
+                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        SwapPokemon(pkmn1, ref input);
+                        return;
+                    }
                     int newPokemon = Pokemons.IndexOf(chosenPkmn);
                     int oldPokemon = Pokemons.IndexOf(pkmn1);
                     //Swap(Pokemons, index, index2);

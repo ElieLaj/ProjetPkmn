@@ -7,6 +7,7 @@ using ProjetPkmn.Game;
 using ProjetPkmn.Mons;
 using ProjetPkmn.Inputs;
 using ProjetPkmn.Trainers;
+using System.Numerics;
 
 namespace ProjetPkmn.Map
 {
@@ -17,8 +18,9 @@ namespace ProjetPkmn.Map
         public Tile[,] Tiles { get; set; }
         public Trainer Player { get; set; }
         public List<Pokemon> Encounters { get; set; }
-
         public List<TrainerNPC> TrainerTiles { get; set; }
+        public List<Dictionary<TrainerNPC, Tile>> DeletedTiles { get; set; }
+
 
         public Plan(int _x, int _y, Tile[,] _tiles, List<TrainerNPC> _trainerTiles, Trainer _player, List<Pokemon> _encounters)
         {
@@ -28,8 +30,11 @@ namespace ProjetPkmn.Map
             Player = _player;
             Encounters = _encounters;
             TrainerTiles = _trainerTiles;
+            DeletedTiles = new List<Dictionary<TrainerNPC, Tile>>();
+
             foreach (TrainerNPC trainerNPC in TrainerTiles)
             {
+                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.X, trainerNPC.Y] } });
                 Tiles[trainerNPC.X, trainerNPC.Y] = trainerNPC.Sprite;
             }
         }
@@ -41,17 +46,40 @@ namespace ProjetPkmn.Map
                 Player.X = (int)(X / 2);
                 Player.Y = (int)(Y / 2);
             }
+            int currentNPC = 0;
             bool moved = false;
             while (true)
             {
                 Console.Clear();
                 moved = false;
-
+                currentNPC = 0;
                 drawTiles();
 
                 foreach (TrainerNPC npc in TrainerTiles)
                 {
-                    npc.BattleOnSight(Player);
+                    
+                    if (npc.BattleOnSight(Player))
+                    {
+                        Console.WriteLine("I saw you now it's time to fight !");
+                        while (Console.ReadKey().Key != ConsoleKey.Enter) { }
+                        bool isWon = Battle.Fight(Player, npc.Pokemons, true);
+                        if(isWon)
+                        {
+                            Tiles[npc.X, npc.Y] = DeletedTiles[currentNPC][npc];
+                            DeletedTiles.Remove(DeletedTiles[currentNPC]);
+                            TrainerTiles.Remove(npc);
+                            break;
+                        }
+                        else
+                        {
+                            Player.X = (int)(X / 2);
+                            Player.Y = (int)(Y / 2);
+                        }                        
+                    }
+                    else
+                    {
+                        currentNPC++;
+                    }
                 }
 
 
@@ -85,7 +113,7 @@ namespace ProjetPkmn.Map
 
                 if (Tiles[Player.X, Player.Y].encounter() && moved)
                 {
-                    Battle.Fight(Player, Encounters[new Random().Next(0, Encounters.Count - 1)]);
+                    Battle.Fight(Player, new List<Pokemon> { Encounters[new Random().Next(0, Encounters.Count - 1)] }, false);
                     foreach (Pokemon wild in Encounters)
                     {
                         wild.Heal(wild.MaxHealth, true, true);
