@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Map
 {
     internal class Wall : Tile
     {
 
-        override public int Z { get; set; }
-
-        public Wall(string _c) : base(_c) 
+        public Wall(string _c) : base(_c, 1)
         {
-
-            Z = 1;
-            C = _c;
 
         }
     }

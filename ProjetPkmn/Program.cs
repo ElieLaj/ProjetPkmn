@@ -14,6 +14,7 @@ using ProjetPkmn.Map;
 using static System.Net.Mime.MediaTypeNames;
 using static ProjetPkmn.Program;
 using ProjetPkmn.Trainers;
+using ProjetPkmn.TCP;
 
 namespace ProjetPkmn
 {
@@ -21,6 +22,7 @@ namespace ProjetPkmn
     {
         static void Main(string[] args)
         {
+
             Move tackle = new Move("Tackle", "Normal", 40);
             Move scratch = new Move("Scratch", "Normal", 40);
             Move lick = new Move("Lick", "Ghost", 20);
@@ -82,15 +84,21 @@ namespace ProjetPkmn
                 gobou
             };
 
-            Bush bush = new Bush("#");
+            Bush bush = new Bush("#", 30);
 
             Wall sideWall = new Wall("!");
+            Wall longsideWall = new Wall(" !");
+
             Wall upWall = new Wall("-");
             Wall downWall = new Wall( "_");
 
             Ground leftDirt = new Ground("| ");
             Ground middleDirt = new Ground( " ");
             Ground rightDirt = new Ground(" |");
+            Ground upDirt = new Ground("_");
+            Ground downDirt = new Ground("-");
+            Ground diagRightDirt = new Ground("\\ ");
+            Ground diagLeftDirt = new Ground(" /");
 
 
             Tile[,] map1Tiles = { 
@@ -103,16 +111,12 @@ namespace ProjetPkmn
                 { downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
 
             Tile[,] arena1Tiles = {
-                { upWall, upWall, upWall, upWall, upWall, upWall, upWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall },
-                { downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
-
+                { upWall, upWall, upWall, upWall, upWall, upWall, upWall, upWall, upWall, upWall, upWall, upWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, bush, bush, bush, bush, bush, sideWall },
+                { sideWall, bush, leftDirt, middleDirt, rightDirt, upDirt, upDirt, upDirt, upDirt, upDirt, upDirt, sideWall },
+                { sideWall, bush, diagRightDirt, middleDirt, middleDirt, middleDirt, middleDirt, middleDirt, middleDirt, middleDirt, middleDirt, sideWall },
+                { sideWall, bush, bush, downDirt, downDirt, downDirt, downDirt, downDirt, downDirt, downDirt, downDirt, longsideWall },
+                { downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
 
 
             string username = "";
@@ -125,25 +129,26 @@ namespace ProjetPkmn
                 Console.WriteLine("Choose your username before the game starts");
                 Console.WriteLine("Please enter a username longer than 3 characters: ");
 
-                username = Console.ReadLine();
+               // username = Console.ReadLine();
+                username = "Azene";
             } while (username.Length <= 3);
 
-
-            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("U "));
-            TrainerNPC fargas = new TrainerNPC(username, 700, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("V "), 5, 6, 2);
+           
+            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("U", 0));
+            TrainerNPC fargas = new TrainerNPC("Fargas", 700, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), "Welcome to my gym, you'll have to win if you want my badge !", new Tile("V ", 1), 3, 11, 1);
             fargas.Pokemons.Add(rattata);
             fargas.Pokemons.Add(ferosinge);
 
-            Plan arena1 = new Plan(9, 7, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
-            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> {  },new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arena1, new Tile("\\/"))} ,user, wildPokemons);
-            
-            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, map1, new Tile("\\/")));
+            Plan arena1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
+            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> {  },new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arena1, new Tile("\\/", 0))} ,user, wildPokemons);
+
+            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, map1, new Tile("\\/", 0)));
 
             Console.WriteLine("Welcome back " + user.Name);
 
             while (true)
             {
-                List<string> inputs = ["Start the game", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary", "Use an item" ,"Leave the game"];
+                List<string> inputs = ["Start the game", "Go to the PokeStore", "Go to the PokeCenter (900 Pokedollars)", "Pokemon summary", "Use an item", "Connect to a Host", "Host a game", "Leave the game"];
 
                 int value = Input.Menu(inputs, user);
 
@@ -242,12 +247,63 @@ namespace ProjetPkmn
                             }
                         }
                         break;
+                    case 5:
+                        Console.WriteLine("What is the host IP: ");
+                        string ip = Console.ReadLine();
+                        Console.WriteLine("What is the host port: ");
+                        string tmp = Console.ReadLine();
+                        try
+                        {
+                            int port = Int32.Parse(tmp);
+                            Client myClient = new Client(ip, port);
+                            myClient.Start();
+                            //myClient.SendName(username);
 
-                    case 5: 
+                            Trainer user2 = user;
+                            user = new Trainer(username, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new Tile("A", 0));
+                            Plan arenaMP1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
+                            PlanClient mapMP1 = new PlanClient(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arenaMP1, new Tile("\\/", 0)) }, user2, user, wildPokemons, myClient);
+                            user2.Pokemons.Add(carapuce);
+                            
+                            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+                            Console.WriteLine("What is the host port: ");
+
+                            mapMP1.Display();
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine($"Port isn't a number '{13000}'");
+                        }
+                        break;
+                    case 6:
+                        Console.WriteLine("What is the host port: ");
+                        //string tmp2 = Console.ReadLine();
+                        try
+                        {
+                            //int port = Int32.Parse(tmp2);
+                            Server myServer = new Server(13000);
+                            string username2 = "A";
+                            //myServer.ListenForName(ref username2);
+                            Trainer user2 = new Trainer(username2, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new Tile("A", 0));
+                            Plan arenaMP1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
+                            PlanHost mapMP1 = new PlanHost(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arenaMP1, new Tile("\\/", 0)) }, user, user2, wildPokemons, myServer);
+                            user.Pokemons.Add(carapuce);
+                            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+
+                            mapMP1.Display();
+                            myServer.Self.Stop();
+                            //myServer.ListenInput();
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine($"Port isn't a number '{13000}'");
+                        }
+                        break; 
+                    case 7: 
                         Console.WriteLine("See you next time");
                         break;
                 }
-                if (value == 5)
+                if (value == 7)
                 {
                     break;
                 }

@@ -9,23 +9,9 @@ namespace ProjetPkmn.Map
 {
     internal class Bush : Tile
     {
-        public Bush(string _c) :base(_c) 
+        public Bush(string _c, int _spawnRate) :base(_c, 0) 
         {
-            Z = 0;
-            C = _c;
-
-        }
-
-        override public bool encounter()
-        {
-            if (new Random().Next(0, 100) >= 70)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            SpawnRate = _spawnRate;
         }  
     }
 }

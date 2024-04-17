@@ -4,16 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetPkmn.Map
+namespace ProjetPkmn.Trainers
 {
-    internal class Ground : Tile
+    public class PlayerPosition
     {
-
-
-        public Ground(string _c) : base(_c, 0)
-        {
-
-        }
-       
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

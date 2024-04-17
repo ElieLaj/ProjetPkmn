@@ -13,21 +13,29 @@ namespace ProjetPkmn.Trainers
     public class TrainerNPC : Trainer
     {
         public int SightRange { get; set; }
-        public TrainerNPC(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, Tile _sprite, int _x, int _y, int _sightRange)
+        public string Text { get; set; }
+
+        public TrainerNPC(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, string _text, Tile _sprite, int _x, int _y, int _sightRange)
             : base(_name, _pokedollars, _pokemons, _items, _captureItems, _sprite)
         {
             X = _x;
             Y = _y;
             SightRange = _sightRange;
+            Text = _text;
         }
 
         public bool BattleOnSight(Trainer player)
         {
-            if(player.X  == X && player.Y  - Y <= SightRange)
+            if(player.X  == X && Y - player.Y <= SightRange)
             {
                return true;
             }
             else return false;
+        }
+
+        public void SayLine()
+        {
+            Console.WriteLine(Name + ": " + Text);
         }
     }
 }

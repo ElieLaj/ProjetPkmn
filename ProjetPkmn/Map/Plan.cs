@@ -49,14 +49,14 @@ namespace ProjetPkmn.Map
             
         }
 
-        public void AddTeleportation(TeleportationPoint tp) 
+        virtual public void AddTeleportation(TeleportationPoint tp) 
         {
             TeleportationPoints.Add(tp);
             Tiles[tp.X, tp.Y] = tp.Sprite;
 
         }
 
-        public void Display()
+        virtual public void Display()
         {
             if(Player.X == 0 && Player.Y == 0)
             {
@@ -69,39 +69,29 @@ namespace ProjetPkmn.Map
             {
                 moved = false;
                 currentNPC = 0;
-                drawTiles();
 
-                if (Console.ReadKey().Key == ConsoleKey.UpArrow && Player.X > 0 && Tiles[Player.X - 1, Player.Y].isWalkable())
+                if (Console.KeyAvailable)
                 {
-                    Player.X -= 1;
+                    var key = Console.ReadKey(true).Key;
                     moved = true;
+                    if (key == ConsoleKey.UpArrow && Player.X > 0 && Tiles[Player.X - 1, Player.Y].IsWalkable())
+                        Player.X -= 1;
+                    else if (key == ConsoleKey.DownArrow && Player.X < X - 1 && Tiles[Player.X + 1, Player.Y].IsWalkable())
+                        Player.X += 1;
+                    else if (key == ConsoleKey.LeftArrow && Player.Y > 0 && Tiles[Player.X, Player.Y - 1].IsWalkable())
+                        Player.Y -= 1;
+                    else if (key == ConsoleKey.RightArrow && Player.Y < Y - 1 && Tiles[Player.X, Player.Y + 1].IsWalkable())
+                        Player.Y += 1;
+                    else if (key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
                 }
-                else if (Console.ReadKey().Key == ConsoleKey.DownArrow && Player.X < X - 1 && Tiles[Player.X + 1, Player.Y].isWalkable())
-                {
-                    Player.X += 1;
-                    moved = true;
+                
+                if (moved) {
+                    drawTiles();
 
-                }
-                else if (Console.ReadKey().Key == ConsoleKey.LeftArrow && Player.Y > 0 && Tiles[Player.X , Player.Y - 1].isWalkable())
-                {
-                    Player.Y -= 1;
-                    moved = true;
-
-                }
-                else if (Console.ReadKey().Key == ConsoleKey.RightArrow && Player.Y < Y - 1 && Tiles[Player.X, Player.Y + 1].isWalkable())
-                {
-                    Player.Y += 1;
-                    moved = true;
-
-                }
-                else if (Console.ReadKey().Key == ConsoleKey.Escape)
-                {
-                    break;
-                }
-
-                drawTiles();
-
-                if (Tiles[Player.X, Player.Y].encounter() && moved)
+                if (Tiles[Player.X, Player.Y].Encounter() && moved)
                 {
                     Battle.Fight(Player, new List<Pokemon> { Encounters[new Random().Next(0, Encounters.Count - 1)] }, false);
                     foreach (Pokemon wild in Encounters)
@@ -115,7 +105,8 @@ namespace ProjetPkmn.Map
 
                     if (npc.BattleOnSight(Player))
                     {
-                        Console.WriteLine("I saw you now it's time to fight !");
+                        npc.SayLine();
+
                         while (Console.ReadKey().Key != ConsoleKey.Enter) { }
                         bool isWon = Battle.Fight(Player, npc.Pokemons, true);
                         if (isWon)
@@ -144,10 +135,11 @@ namespace ProjetPkmn.Map
                         tp.Teleport(Player);
                     }
                 }
+            }
 
             }
         }
-        private void drawTiles()
+        virtual public void drawTiles()
         {
             Console.Clear();
             for (int i = 0; i < X; i++)
