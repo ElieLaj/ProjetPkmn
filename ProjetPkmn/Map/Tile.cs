@@ -8,23 +8,22 @@ using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Map
 {
-    public class Tile
+    abstract public class Tile
     {
 
         public string C { get; set; }
         public int Z { get; set; }
         public int SpawnRate { get; set; }
 
-
+        /*
         public Tile(string _c, int _z)
         {
             C = _c;
             Z = _z;
             SpawnRate = 0;
-        }
-
-
-
+        }*/
+        abstract public void Effect(Trainer player, params object[] parameters);
+        /*
         virtual public bool Encounter()
         {
             if (SpawnRate > 0)
@@ -39,7 +38,7 @@ namespace ProjetPkmn.Map
                 }
             }
             else return false;
-        }
+        }*/
 
         public bool IsWalkable()
         {

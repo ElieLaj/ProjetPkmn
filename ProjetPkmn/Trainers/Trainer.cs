@@ -17,19 +17,21 @@ namespace ProjetPkmn.Trainers
         public List<Pokemon> Pokemons { get; set; }
         public List<IItem> HealingItems { get; set; }
         public List<IItem> CaptureItems { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Tile Sprite { get; set; }
+        //public int X { get; set; }
+        //public int Y { get; set; }
+        public TrainerTile Sprite { get; set; }
+        public PlayerPosition Position { get; set; }
 
-        public Trainer(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, Tile _sprite)
+        public Trainer(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, TrainerTile _sprite)
         {
             Name = _name;
             Pokedollars = _pokedollars;
             Pokemons = _pokemons;
             HealingItems = _items;
             CaptureItems = _captureItems;
-            X = 0;
-            Y = 0;
+            //X = 0;
+            //Y = 0;
+            Position = new PlayerPosition { X = 0, Y = 0 };
             Sprite = _sprite;
         }
 

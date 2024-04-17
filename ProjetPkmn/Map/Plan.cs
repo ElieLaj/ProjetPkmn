@@ -36,52 +36,51 @@ namespace ProjetPkmn.Map
 
             foreach (TrainerNPC trainerNPC in TrainerTiles)
             {
-                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.X, trainerNPC.Y] } });
-                Tiles[trainerNPC.X, trainerNPC.Y] = trainerNPC.Sprite;
+                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.Position.X, trainerNPC.Position.Y] } });
+                Tiles[trainerNPC.Position.X, trainerNPC.Position.Y] = trainerNPC.Sprite;
             }
-            if (TeleportationPoints.Count > 0)
-            {
-                foreach (TeleportationPoint tp in TeleportationPoints)
-                {
-                    Tiles[tp.X, tp.Y] = tp.Sprite;
-                }
-            }
+
             
         }
 
-        virtual public void AddTeleportation(TeleportationPoint tp) 
-        {
-            TeleportationPoints.Add(tp);
-            Tiles[tp.X, tp.Y] = tp.Sprite;
-
-        }
 
         virtual public void Display()
         {
-            if(Player.X == 0 && Player.Y == 0)
+            if(Player.Position.X == 0 && Player.Position.Y == 0)
             {
-                Player.X = (int)(X / 2);
-                Player.Y = (int)(Y / 2);
+                Player.Position.X = (int)(X / 2);
+                Player.Position.Y = (int)(Y / 2);
             }
             int currentNPC = 0;
             bool moved = false;
             while (true)
             {
-                moved = false;
                 currentNPC = 0;
 
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
                     moved = true;
-                    if (key == ConsoleKey.UpArrow && Player.X > 0 && Tiles[Player.X - 1, Player.Y].IsWalkable())
-                        Player.X -= 1;
-                    else if (key == ConsoleKey.DownArrow && Player.X < X - 1 && Tiles[Player.X + 1, Player.Y].IsWalkable())
-                        Player.X += 1;
-                    else if (key == ConsoleKey.LeftArrow && Player.Y > 0 && Tiles[Player.X, Player.Y - 1].IsWalkable())
-                        Player.Y -= 1;
-                    else if (key == ConsoleKey.RightArrow && Player.Y < Y - 1 && Tiles[Player.X, Player.Y + 1].IsWalkable())
-                        Player.Y += 1;
+                    if (key == ConsoleKey.UpArrow && Player.Position.X > 0 && Tiles[Player.Position.X - 1, Player.Position.Y].IsWalkable()){
+                        Player.Position.X -= 1;
+                        moved = true;
+
+                    }
+                    else if (key == ConsoleKey.DownArrow && Player.Position.X < X - 1 && Tiles[Player.Position.X + 1, Player.Position.Y].IsWalkable()){
+                        moved = true;
+
+                        Player.Position.X += 1;
+                    }
+                    else if (key == ConsoleKey.LeftArrow && Player.Position.Y > 0 && Tiles[Player.Position.X, Player.Position.Y - 1].IsWalkable()){
+                        moved = true;
+
+                        Player.Position.Y -= 1;
+                    }
+                    else if (key == ConsoleKey.RightArrow && Player.Position.Y < Y - 1 && Tiles[Player.Position.X, Player.Position.Y + 1].IsWalkable()){
+                        moved = true;
+
+                        Player.Position.Y += 1;
+                    }
                     else if (key == ConsoleKey.Escape)
                     {
                         break;
@@ -90,16 +89,10 @@ namespace ProjetPkmn.Map
                 
                 if (moved) {
                     drawTiles();
+                    moved = false;
 
-                if (Tiles[Player.X, Player.Y].Encounter() && moved)
-                {
-                    Battle.Fight(Player, new List<Pokemon> { Encounters[new Random().Next(0, Encounters.Count - 1)] }, false);
-                    foreach (Pokemon wild in Encounters)
-                    {
-                        wild.Heal(wild.MaxHealth, true, true);
-                    }
-                }
-
+                    
+                    Tiles[Player.Position.X, Player.Position.Y].Effect(Player, Encounters);
                 foreach (TrainerNPC npc in TrainerTiles)
                 {
 
@@ -111,15 +104,15 @@ namespace ProjetPkmn.Map
                         bool isWon = Battle.Fight(Player, npc.Pokemons, true);
                         if (isWon)
                         {
-                            Tiles[npc.X, npc.Y] = DeletedTiles[currentNPC][npc];
+                            Tiles[npc.Position.X, npc.Position.Y] = DeletedTiles[currentNPC][npc];
                             DeletedTiles.Remove(DeletedTiles[currentNPC]);
                             TrainerTiles.Remove(npc);
                             break;
                         }
                         else
                         {
-                            Player.X = (int)(X / 2);
-                            Player.Y = (int)(Y / 2);
+                            Player.Position.X = (int)(X / 2);
+                            Player.Position.Y = (int)(Y / 2);
                         }
                     }
                     else
@@ -127,14 +120,7 @@ namespace ProjetPkmn.Map
                         currentNPC++;
                     }
                 }
-
-                foreach (TeleportationPoint tp in TeleportationPoints)
-                {
-                    if (tp.X == Player.X && tp.Y == Player.Y)
-                    {
-                        tp.Teleport(Player);
-                    }
-                }
+                
             }
 
             }
@@ -146,9 +132,9 @@ namespace ProjetPkmn.Map
             {
                 for (int j = 0; j < Y; j++)
                 {
-                    if (Player.X == i && Player.Y == j)
+                    if (Player.Position.X == i && Player.Position.Y == j)
                     {
-                        Console.Write(Player.Sprite.C);
+                        Console.Write(Player.Sprite.C + " ");
                     }
                     else
                     {

@@ -7,14 +7,12 @@ using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Map
 {
-    internal class Wall : Tile
+    public class TrainerTile: Tile
     {
-
-        public Wall(string _c)
+        public TrainerTile(string _c, int _z)
         {
-            Z = 1;
             C = _c;
-
+            Z = _z;
         }
 
         public override void Effect(Trainer player, params object[] parameters)

@@ -41,37 +41,24 @@ namespace ProjetPkmn.Map
 
             foreach (TrainerNPC trainerNPC in TrainerTiles)
             {
-                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.X, trainerNPC.Y] } });
-                Tiles[trainerNPC.X, trainerNPC.Y] = trainerNPC.Sprite;
-            }
-            if (TeleportationPoints.Count > 0)
-            {
-                foreach (TeleportationPoint tp in TeleportationPoints)
-                {
-                    Tiles[tp.X, tp.Y] = tp.Sprite;
-                }
+                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.Position.X, trainerNPC.Position.Y] } });
+                Tiles[trainerNPC.Position.X, trainerNPC.Position.Y] = trainerNPC.Sprite;
             }
 
     }
-
-    override public void AddTeleportation(TeleportationPoint tp) 
-        {
-            TeleportationPoints.Add(tp);
-            Tiles[tp.X, tp.Y] = tp.Sprite;
-
-        }
+        
 
         override public void Display()
         {
-            if(Player.X == 0 && Player.Y == 0)
+            if(Player.Position.X == 0 && Player.Position.Y == 0)
             {
-                Player.X = (int)(X / 2);
-                Player.Y = (int)(Y / 2);
+                Player.Position.X = (int)(X / 2);
+                Player.Position.Y = (int)(Y / 2);
             }
-            if (Player2.X == 0 && Player2.Y == 0)
+            if (Player2.Position.X == 0 && Player2.Position.Y == 0)
             {
-                Player2.X = (int)(X / 2);
-                Player2.Y = (int)(Y / 2);
+                Player2.Position.X = (int)(X / 2);
+                Player2.Position.Y = (int)(Y / 2);
             }
             drawTiles();
             Thread inputThread = new Thread(() => lookForInputs());
@@ -111,10 +98,10 @@ namespace ProjetPkmn.Map
                         //Console.WriteLine("P2.X: " + P2.X + " | " + P2.Y);
                         if (Tiles[P2.X, P2.Y].IsWalkable())
                         {
-                            Player2.X = P2.X;
-                            Player2.Y = P2.Y;
+                            Player2.Position.X = P2.X;
+                            Player2.Position.Y = P2.Y;
                             moved2 = true;
-                            Host.SendMovementToAllClients(Player.X, Player.Y, Player2.X, Player2.Y);
+                            Host.SendMovementToAllClients(Player.Position.X, Player.Position.Y, Player2.Position.X, Player2.Position.Y);
                         }
                     }
                     P2 = null;
@@ -123,14 +110,8 @@ namespace ProjetPkmn.Map
                     drawTiles();
                     moved2 = false;
                     moved = false;
-                    if (Tiles[Player.X, Player.Y].Encounter())
-                    {
-                        Battle.Fight(Player, new List<Pokemon> { Encounters[new Random().Next(0, Encounters.Count - 1)] }, false);
-                        foreach (Pokemon wild in Encounters)
-                        {
-                            wild.Heal(wild.MaxHealth, true, true);
-                        }
-                    }
+
+                    Tiles[Player.Position.X, Player.Position.Y].Effect(Player, Encounters);
 
                     foreach (TrainerNPC npc in TrainerTiles)
                     {
@@ -143,15 +124,15 @@ namespace ProjetPkmn.Map
                             bool isWon = Battle.Fight(Player, npc.Pokemons, true);
                             if (isWon)
                             {
-                                Tiles[npc.X, npc.Y] = DeletedTiles[currentNPC][npc];
+                                Tiles[npc.Position.X, npc.Position.Y] = DeletedTiles[currentNPC][npc];
                                 DeletedTiles.Remove(DeletedTiles[currentNPC]);
                                 TrainerTiles.Remove(npc);
                                 break;
                             }
                             else
                             {
-                                Player.X = (int)(X / 2);
-                                Player.Y = (int)(Y / 2);
+                                Player.Position.X = (int)(X / 2);
+                                Player.Position.Y = (int)(Y / 2);
                             }
                         }
                         else
@@ -159,19 +140,9 @@ namespace ProjetPkmn.Map
                             currentNPC++;
                         }
                     }
-
-                    foreach (TeleportationPoint tp in TeleportationPoints)
-                    {
-                        if (tp.X == Player.X && tp.Y == Player.Y)
-                        {
-                            tp.Teleport(Player);
-                        }
-                    }
                 }
                 System.Threading.Thread.Sleep(50);
             }
-            inputThread.Interrupt();
-
         }
         override public void drawTiles()
         {
@@ -180,17 +151,17 @@ namespace ProjetPkmn.Map
             {
                 for (int j = 0; j < Y; j++)
                 {
-                    if ((Player.X == i && Player.Y == j) || (Player2.X == i && Player2.Y == j))
+                    if ((Player.Position.X == i && Player.Position.Y == j) || (Player2.Position.X == i && Player2.Position.Y == j))
                     {
-                        if ((Player.X == i && Player.Y == j) && (Player2.X == i && Player2.Y == j))
+                        if ((Player.Position.X == i && Player.Position.Y == j) && (Player2.Position.X == i && Player2.Position.Y == j))
                         {
                             Console.Write(Player.Sprite.C + "" + Player2.Sprite.C + " ");
                         }
-                        else if (Player2.X == i && Player2.Y == j)
+                        else if (Player2.Position.X == i && Player2.Position.Y == j)
                         {
                             Console.Write(Player2.Sprite.C + " ");
                         }
-                        else if (Player.X == i && Player.Y == j)
+                        else if (Player.Position.X == i && Player.Position.Y == j)
                         {
                             Console.Write(Player.Sprite.C + " ");
                         }
@@ -211,31 +182,31 @@ namespace ProjetPkmn.Map
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
-                    if (key == ConsoleKey.UpArrow && Player.X > 0 && Tiles[Player.X - 1, Player.Y].IsWalkable())
+                    if (key == ConsoleKey.UpArrow && Player.Position.X > 0 && Tiles[Player.Position.X - 1, Player.Position.Y].IsWalkable())
                     {
-                        Player.X -= 1;
+                        Player.Position.X -= 1;
                         moved = true;
                     Console.WriteLine(moved);
-                        Host.SendMovementToAllClients(Player.X, Player.Y, Player2.X, Player2.Y);
+                        Host.SendMovementToAllClients(Player.Position.X, Player.Position.Y, Player2.Position.X, Player2.Position.Y);
                     }
-                    else if (key == ConsoleKey.DownArrow && Player.X < X - 1 && Tiles[Player.X + 1, Player.Y].IsWalkable())
+                    else if (key == ConsoleKey.DownArrow && Player.Position.X < X - 1 && Tiles[Player.Position.X + 1, Player.Position.Y].IsWalkable())
                     {
 
-                        Player.X += 1;
+                        Player.Position.X += 1;
                         moved = true;
-                        Host.SendMovementToAllClients(Player.X, Player.Y, Player2.X, Player2.Y);
+                        Host.SendMovementToAllClients(Player.Position.X, Player.Position.Y, Player2.Position.X, Player2.Position.Y);
                     }
-                    else if (key == ConsoleKey.LeftArrow && Player.Y > 0 && Tiles[Player.X, Player.Y - 1].IsWalkable())
+                    else if (key == ConsoleKey.LeftArrow && Player.Position.Y > 0 && Tiles[Player.Position.X, Player.Position.Y - 1].IsWalkable())
                     {
-                        Player.Y -= 1;
+                        Player.Position.Y -= 1;
                         moved = true;
-                        Host.SendMovementToAllClients(Player.X, Player.Y, Player2.X, Player2.Y);
+                        Host.SendMovementToAllClients(Player.Position.X, Player.Position.Y, Player2.Position.X, Player2.Position.Y);
                     }
-                    else if (key == ConsoleKey.RightArrow && Player.Y < Y - 1 && Tiles[Player.X, Player.Y + 1].IsWalkable())
+                    else if (key == ConsoleKey.RightArrow && Player.Position.Y < Y - 1 && Tiles[Player.Position.X, Player.Position.Y + 1].IsWalkable())
                     {
-                        Player.Y += 1;
+                        Player.Position.Y += 1;
                         moved = true;
-                        Host.SendMovementToAllClients(Player.X, Player.Y, Player2.X, Player2.Y);
+                        Host.SendMovementToAllClients(Player.Position.X, Player.Position.Y, Player2.Position.X, Player2.Position.Y);
                     }
                 }
             

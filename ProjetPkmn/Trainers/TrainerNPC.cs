@@ -15,18 +15,17 @@ namespace ProjetPkmn.Trainers
         public int SightRange { get; set; }
         public string Text { get; set; }
 
-        public TrainerNPC(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, string _text, Tile _sprite, int _x, int _y, int _sightRange)
+        public TrainerNPC(string _name, int _pokedollars, List<Pokemon> _pokemons, List<IItem> _items, List<IItem> _captureItems, string _text, TrainerTile _sprite, PlayerPosition _position, int _sightRange)
             : base(_name, _pokedollars, _pokemons, _items, _captureItems, _sprite)
         {
-            X = _x;
-            Y = _y;
+            Position = _position;
             SightRange = _sightRange;
             Text = _text;
         }
 
         public bool BattleOnSight(Trainer player)
         {
-            if(player.X  == X && Y - player.Y <= SightRange)
+            if(player.Position.X  == Position.X && Position.Y - player.Position.Y <= SightRange)
             {
                return true;
             }

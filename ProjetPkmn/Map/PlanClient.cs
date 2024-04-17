@@ -36,52 +36,38 @@ namespace ProjetPkmn.Map
             DeletedTiles = new List<Dictionary<TrainerNPC, Tile>>();
             Positions = new PlayerPositions
             {
-                Player1 = new PlayerPosition { X = Player.X, Y = Player.Y },
-                Player2 = new PlayerPosition { X = Player2.X, Y = Player.Y }
+                Player1 = new PlayerPosition { X = Player.Position.X, Y = Player.Position.Y },
+                Player2 = new PlayerPosition { X = Player2.Position.X, Y = Player.Position.Y }
             };
             foreach (TrainerNPC trainerNPC in TrainerTiles)
             {
-                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.X, trainerNPC.Y] } });
-                Tiles[trainerNPC.X, trainerNPC.Y] = trainerNPC.Sprite;
-            }
-            if (TeleportationPoints.Count > 0)
-            {
-                foreach (TeleportationPoint tp in TeleportationPoints)
-                {
-                    Tiles[tp.X, tp.Y] = tp.Sprite;
-                }
+                DeletedTiles.Add(new Dictionary<TrainerNPC, Tile>{ {trainerNPC, Tiles[trainerNPC.Position.X, trainerNPC.Position.Y] } });
+                Tiles[trainerNPC.Position.X, trainerNPC.Position.Y] = trainerNPC.Sprite;
             }
             
         }
-
-        override public void AddTeleportation(TeleportationPoint tp) 
-        {
-            TeleportationPoints.Add(tp);
-            Tiles[tp.X, tp.Y] = tp.Sprite;
-
-        }
+        
 
         override public void Display()
         {
-            if(Player.X == 0 && Player.Y == 0)
+            if(Player.Position.X == 0 && Player.Position.Y == 0)
             {
                 Positions.Player1.X = (int)(X / 2);
                 Positions.Player1.Y = (int)(Y / 2);
             }
-            if (Player2.X == 0 && Player2.Y == 0)
+            if (Player2.Position.X == 0 && Player2.Position.Y == 0)
             {
                 Positions.Player2.X = (int)(X / 2);
                 Positions.Player2.Y = (int)(Y / 2);
             }
             drawTiles();
             Thread inputThread = new Thread(() => lookForInputs());
-            inputThread.Start();
 
             Thread hostThread = new Thread(() => Positions = Hosted.ReceiveMovements(
                     new PlayerPositions
                     {
-                        Player1 = new PlayerPosition { X = Player.X, Y = Player.Y },
-                        Player2 = new PlayerPosition { X = Player2.X, Y = Player.Y }
+                        Player1 = new PlayerPosition { X = Player.Position.X, Y = Player.Position.Y },
+                        Player2 = new PlayerPosition { X = Player2.Position.X, Y = Player.Position.Y }
                     }
                 ));
             hostThread.Start();
@@ -101,50 +87,50 @@ namespace ProjetPkmn.Map
                     hostThread = new Thread(() => Positions = Hosted.ReceiveMovements(
                     new PlayerPositions
                     {
-                        Player1 = new PlayerPosition { X = Player.X, Y = Player.Y },
-                        Player2 = new PlayerPosition { X = Player2.X, Y = Player.Y }
+                        Player1 = new PlayerPosition { X = Player.Position.X, Y = Player.Position.Y },
+                        Player2 = new PlayerPosition { X = Player2.Position.X, Y = Player2.Position.Y }
                     }
                     
                 ));
                     
                     hostThread.Start();
                 }
+                if (!inputThread.IsAlive)
+                {
+                    inputThread = new Thread(() => lookForInputs());
+                    inputThread.Start(); 
+                }
+                
 
-                int prevPlayer1X = Player.X;
-                int prevPlayer1Y = Player.Y;
-                int prevPlayer2X = Player2.X;
-                int prevPlayer2Y = Player2.Y;
 
-                Player.X = Positions.Player1.X;
-                Player.Y = Positions.Player1.Y;
-                Player2.X = Positions.Player2.X;
-                Player2.Y = Positions.Player2.Y;
+                int prevPlayer1X = Player.Position.X;
+                int prevPlayer1Y = Player.Position.Y;
+                int prevPlayer2X = Player2.Position.X;
+                int prevPlayer2Y = Player2.Position.Y;
 
-                if (Player.X != prevPlayer1X || Player.Y != prevPlayer1Y || Player2.X != prevPlayer2X || Player2.Y != prevPlayer2Y)
+                Player.Position.X = Positions.Player1.X;
+                Player.Position.Y = Positions.Player1.Y;
+                Player2.Position.X = Positions.Player2.X;
+                Player2.Position.Y = Positions.Player2.Y;
+
+                if (Player.Position.X != prevPlayer1X || Player.Position.Y != prevPlayer1Y || Player2.Position.X != prevPlayer2X || Player2.Position.Y != prevPlayer2Y)
                 {
                     moved = true; 
                 }
 
 
-                Player.X = Positions.Player1.X;
-                Player.Y = Positions.Player1.Y;
-                Player2.X = Positions.Player2.X;
-                Player2.Y = Positions.Player2.Y;
+                Player.Position.X = Positions.Player1.X;
+                Player.Position.Y = Positions.Player1.Y;
+                Player2.Position.X = Positions.Player2.X;
+                Player2.Position.Y = Positions.Player2.Y;
 
 
                 if (moved || moved2){
                     drawTiles();
+                   
+                    Tiles[Player2.Position.X, Player2.Position.Y].Effect(Player2, Encounters);
 
-                    if (Tiles[Player.X, Player.Y].Encounter())
-                {
-                    Battle.Fight(Player, new List<Pokemon> { Encounters[new Random().Next(0, Encounters.Count - 1)] }, false);
-                    foreach (Pokemon wild in Encounters)
-                    {
-                        wild.Heal(wild.MaxHealth, true, true);
-                    }
-                }
-
-                foreach (TrainerNPC npc in TrainerTiles)
+                    foreach (TrainerNPC npc in TrainerTiles)
                 {
 
                     if (npc.BattleOnSight(Player))
@@ -155,15 +141,15 @@ namespace ProjetPkmn.Map
                         bool isWon = Battle.Fight(Player, npc.Pokemons, true);
                         if (isWon)
                         {
-                            Tiles[npc.X, npc.Y] = DeletedTiles[currentNPC][npc];
+                            Tiles[npc.Position.X, npc.Position.Y] = DeletedTiles[currentNPC][npc];
                             DeletedTiles.Remove(DeletedTiles[currentNPC]);
                             TrainerTiles.Remove(npc);
                             break;
                         }
                         else
                         {
-                            Player.X = (int)(X / 2);
-                            Player.Y = (int)(Y / 2);
+                            Player.Position.X = (int)(X / 2);
+                            Player.Position.Y = (int)(Y / 2);
                         }
                     }
                     else
@@ -171,14 +157,6 @@ namespace ProjetPkmn.Map
                         currentNPC++;
                     }
                 }
-
-                    foreach (TeleportationPoint tp in TeleportationPoints)
-                    {
-                        if (tp.X == Player.X && tp.Y == Player.Y)
-                        {
-                            tp.Teleport(Player);
-                        }
-                    }
                 }
                 System.Threading.Thread.Sleep(100);
 
@@ -191,17 +169,17 @@ namespace ProjetPkmn.Map
             {
                 for (int j = 0; j < Y; j++)
                 {
-                    if ((Player.X == i && Player.Y == j) || (Player2.X == i && Player2.Y == j))
+                    if ((Player.Position.X == i && Player.Position.Y == j) || (Player2.Position.X == i && Player2.Position.Y == j))
                     {
-                        if((Player.X == i && Player.Y == j) && (Player2.X == i && Player2.Y == j))
+                        if((Player.Position.X == i && Player.Position.Y == j) && (Player2.Position.X == i && Player2.Position.Y == j))
                         {
                             Console.Write(Player.Sprite.C +""+Player2.Sprite.C+" ");
                         }
-                        else if (Player2.X == i && Player2.Y == j)
+                        else if (Player2.Position.X == i && Player2.Position.Y == j)
                         {
                             Console.Write(Player2.Sprite.C+ " ");
                         }
-                        else if (Player.X == i && Player.Y == j)
+                        else if (Player.Position.X == i && Player.Position.Y == j)
                         {
                             Console.Write(Player.Sprite.C + " ");
                         }
@@ -218,31 +196,30 @@ namespace ProjetPkmn.Map
         }
         public void lookForInputs()
         {
-            while(true){
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                     var key = keyInfo.Key;
                     if (key == ConsoleKey.UpArrow)
                     {
-                        Hosted.SendMovement(new PlayerPosition { X = Player2.X - 1, Y = Player2.Y });
+                        Hosted.SendMovement(new PlayerPosition { X = Player2.Position.X - 1, Y = Player2.Position.Y });
                     }
                     else if (key == ConsoleKey.DownArrow)
                     {
-                        Hosted.SendMovement(new PlayerPosition { X = Player2.X + 1, Y = Player2.Y });
+                        Hosted.SendMovement(new PlayerPosition { X = Player2.Position.X + 1, Y = Player2.Position.Y });
                     }
                     else if (key == ConsoleKey.LeftArrow)
                     {
-                        Hosted.SendMovement(new PlayerPosition { X = Player2.X, Y = Player2.Y - 1 });
+                        Hosted.SendMovement(new PlayerPosition { X = Player2.Position.X, Y = Player2.Position.Y - 1 });
                     }
                     else if (key == ConsoleKey.RightArrow)
                     {
-                        Hosted.SendMovement(new PlayerPosition { X = Player2.X, Y = Player2.Y + 1 });
+                        Hosted.SendMovement(new PlayerPosition { X = Player2.Position.X, Y = Player2.Position.Y + 1 });
                     }
                 }
                 System.Threading.Thread.Sleep(100);
 
-            }
+            
         }
     }
 }

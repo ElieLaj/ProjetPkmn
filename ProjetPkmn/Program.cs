@@ -100,7 +100,6 @@ namespace ProjetPkmn
             Ground diagRightDirt = new Ground("\\ ");
             Ground diagLeftDirt = new Ground(" /");
 
-
             Tile[,] map1Tiles = { 
                 { upWall, upWall, upWall, upWall, upWall, upWall, upWall }, 
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
@@ -118,7 +117,6 @@ namespace ProjetPkmn
                 { sideWall, bush, bush, downDirt, downDirt, downDirt, downDirt, downDirt, downDirt, downDirt, downDirt, longsideWall },
                 { downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall, downWall } };
 
-
             string username = "";
 
             do
@@ -134,15 +132,18 @@ namespace ProjetPkmn
             } while (username.Length <= 3);
 
            
-            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new Tile("U", 0));
-            TrainerNPC fargas = new TrainerNPC("Fargas", 700, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), "Welcome to my gym, you'll have to win if you want my badge !", new Tile("V ", 1), 3, 11, 1);
+            Trainer user = new Trainer(username, 4000, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), new TrainerTile("U", 0));
+            TrainerNPC fargas = new TrainerNPC("Fargas", 700, new List<Pokemon>(), new List<IItem>(), new List<IItem>(), "Welcome to my gym, you'll have to win if you want my badge !", new TrainerTile("V ", 1), new PlayerPosition { X = 3, Y = 10}, 1);
             fargas.Pokemons.Add(rattata);
             fargas.Pokemons.Add(ferosinge);
 
             Plan arena1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
-            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> {  },new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arena1, new Tile("\\/", 0))} ,user, wildPokemons);
+            Plan map1 = new Plan(7, 7, map1Tiles, new List<TrainerNPC> {  },new List<TeleportationPoint> { new TeleportationPoint("\\/", 1, 3, arena1)} ,user, wildPokemons);
 
-            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, map1, new Tile("\\/", 0)));
+            arena1.Tiles[0, 3] = new TeleportationPoint("\\/", 5, 3, map1);
+            map1.Tiles[6, 3] = new TeleportationPoint("\\/", 1, 3, arena1);
+
+            //arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, map1, new Tile("\\/", 0)));
 
             Console.WriteLine("Welcome back " + user.Name);
 
@@ -260,12 +261,15 @@ namespace ProjetPkmn
                             //myClient.SendName(username);
 
                             Trainer user2 = user;
-                            user = new Trainer(username, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new Tile("A", 0));
+                            user = new Trainer(username, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new TrainerTile("A", 0));
                             Plan arenaMP1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
-                            PlanClient mapMP1 = new PlanClient(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arenaMP1, new Tile("\\/", 0)) }, user2, user, wildPokemons, myClient);
+                            PlanClient mapMP1 = new PlanClient(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint("\\/", 1, 3, arenaMP1) }, user2, user, wildPokemons, myClient);
                             user2.Pokemons.Add(carapuce);
-                            
-                            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+
+                            arenaMP1.Tiles[0, 3] = new TeleportationPoint("\\/", 5, 3, mapMP1);
+                            mapMP1.Tiles[6, 3] = new TeleportationPoint("\\/", 1, 3, arenaMP1);
+
+                            //arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
                             Console.WriteLine("What is the host port: ");
 
                             mapMP1.Display();
@@ -284,11 +288,14 @@ namespace ProjetPkmn
                             Server myServer = new Server(13000);
                             string username2 = "A";
                             //myServer.ListenForName(ref username2);
-                            Trainer user2 = new Trainer(username2, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new Tile("A", 0));
+                            Trainer user2 = new Trainer(username2, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new TrainerTile("A", 0));
                             Plan arenaMP1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
-                            PlanHost mapMP1 = new PlanHost(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint(6, 3, 1, 3, arenaMP1, new Tile("\\/", 0)) }, user, user2, wildPokemons, myServer);
+                            PlanHost mapMP1 = new PlanHost(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint("\\/", 1, 3, arenaMP1) }, user, user2, wildPokemons, myServer);
                             user.Pokemons.Add(carapuce);
-                            arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+                            //arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+
+                            arenaMP1.Tiles[0, 3] = new TeleportationPoint("\\/", 5, 3, mapMP1);
+                            mapMP1.Tiles[6, 3] = new TeleportationPoint("\\/", 1, 3, arenaMP1);
 
                             mapMP1.Display();
                             myServer.Self.Stop();

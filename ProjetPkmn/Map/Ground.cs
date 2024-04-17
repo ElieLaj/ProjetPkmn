@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjetPkmn.Trainers;
 
 namespace ProjetPkmn.Map
 {
@@ -10,10 +11,15 @@ namespace ProjetPkmn.Map
     {
 
 
-        public Ground(string _c) : base(_c, 0)
+        public Ground(string _c)
         {
+            Z = 0; 
+            C = _c;
 
         }
-       
+        public override void Effect(Trainer player, params object[] parameters)
+        {
+            
+        }
     }
 }
