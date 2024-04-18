@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ProjetPkmn.Mons;
-using ProjetPkmn.Inputs;
-using ProjetPkmn.Items;
-using ProjetPkmn.Trainers;
+using ProjetPkmn.Assets.Items;
+using ProjetPkmn.Tools.Inputs;
+using ProjetPkmn.Assets.Mons;
+using ProjetPkmn.Assets.Trainers;
 
 namespace ProjetPkmn.Game
 {

@@ -5,16 +5,21 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using ProjetPkmn.Items;
-using ProjetPkmn.Mons;
-using ProjetPkmn.Inputs;
 using ProjetPkmn.Game;
-using ProjetPkmn.Stores;
-using ProjetPkmn.Map;
 using static System.Net.Mime.MediaTypeNames;
 using static ProjetPkmn.Program;
-using ProjetPkmn.Trainers;
-using ProjetPkmn.TCP;
+using ProjetPkmn.Assets.Map;
+using ProjetPkmn.Assets.Map.Plans;
+using ProjetPkmn.Assets.Map.TilesType;
+using ProjetPkmn.Tools.Inputs;
+using ProjetPkmn.Assets.Items;
+using ProjetPkmn.Assets.Items.HealingItems;
+using ProjetPkmn.Assets.Items.PokeBall;
+using ProjetPkmn.Assets.Items.Pokemons;
+using ProjetPkmn.Assets.Mons;
+using ProjetPkmn.Assets.Map.Places.Stores;
+using ProjetPkmn.Tools.TCP;
+using ProjetPkmn.Assets.Trainers;
 
 namespace ProjetPkmn
 {
@@ -100,9 +105,11 @@ namespace ProjetPkmn
             Ground diagRightDirt = new Ground("\\ ");
             Ground diagLeftDirt = new Ground(" /");
 
+            PokeCenter center = new PokeCenter("H");
+
             Tile[,] map1Tiles = { 
                 { upWall, upWall, upWall, upWall, upWall, upWall, upWall }, 
-                { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
+                { sideWall, bush, leftDirt, center, rightDirt, bush, sideWall }, 
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
                 { sideWall, bush, leftDirt, middleDirt, rightDirt, bush, sideWall }, 
@@ -142,8 +149,6 @@ namespace ProjetPkmn
 
             arena1.Tiles[0, 3] = new TeleportationPoint("\\/", 5, 3, map1);
             map1.Tiles[6, 3] = new TeleportationPoint("\\/", 1, 3, arena1);
-
-            //arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, map1, new Tile("\\/", 0)));
 
             Console.WriteLine("Welcome back " + user.Name);
 
@@ -249,14 +254,14 @@ namespace ProjetPkmn
                         }
                         break;
                     case 5:
-                        Console.WriteLine("What is the host IP: ");
-                        string ip = Console.ReadLine();
-                        Console.WriteLine("What is the host port: ");
-                        string tmp = Console.ReadLine();
+                        //Console.WriteLine("What is the host IP: ");
+                        //string ip = Console.ReadLine();
+                        //Console.WriteLine("What is the host port: ");
+                        // string tmp = Console.ReadLine();
                         try
                         {
-                            int port = Int32.Parse(tmp);
-                            Client myClient = new Client(ip, port);
+                            //int port = Int32.Parse(tmp);
+                            Client myClient = new Client("127.0.0.1", 13000);
                             myClient.Start();
                             //myClient.SendName(username);
 
@@ -269,7 +274,7 @@ namespace ProjetPkmn
                             arenaMP1.Tiles[0, 3] = new TeleportationPoint("\\/", 5, 3, mapMP1);
                             mapMP1.Tiles[6, 3] = new TeleportationPoint("\\/", 1, 3, arenaMP1);
 
-                            //arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+                            
                             Console.WriteLine("What is the host port: ");
 
                             mapMP1.Display();
@@ -280,19 +285,19 @@ namespace ProjetPkmn
                         }
                         break;
                     case 6:
-                        Console.WriteLine("What is the host port: ");
                         //string tmp2 = Console.ReadLine();
                         try
                         {
                             //int port = Int32.Parse(tmp2);
                             Server myServer = new Server(13000);
+                            myServer.Start();
                             string username2 = "A";
                             //myServer.ListenForName(ref username2);
                             Trainer user2 = new Trainer(username2, 4000, new List<Pokemon> { bulbizarre }, new List<IItem>(), new List<IItem>(), new TrainerTile("A", 0));
                             Plan arenaMP1 = new Plan(6, 12, arena1Tiles, new List<TrainerNPC> { fargas }, new List<TeleportationPoint> { }, user, wildPokemons);
                             PlanHost mapMP1 = new PlanHost(7, 7, map1Tiles, new List<TrainerNPC> { }, new List<TeleportationPoint> { new TeleportationPoint("\\/", 1, 3, arenaMP1) }, user, user2, wildPokemons, myServer);
                             user.Pokemons.Add(carapuce);
-                            //arena1.AddTeleportation(new TeleportationPoint(0, 3, 5, 3, mapMP1, new Tile("/\\", 0)));
+
 
                             arenaMP1.Tiles[0, 3] = new TeleportationPoint("\\/", 5, 3, mapMP1);
                             mapMP1.Tiles[6, 3] = new TeleportationPoint("\\/", 1, 3, arenaMP1);
